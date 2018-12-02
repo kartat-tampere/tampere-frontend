@@ -1,0 +1,26 @@
+{
+  "name": "oskari-frontend-tampere",
+  "version": "1.0.0",
+  "description": "kartat.tampere.fi/oskari bundles & app conf",
+  "keywords": [
+    "Oskari"
+  ],
+  "dependencies": {
+    "oskari-frontend": "file:../oskari-frontend",
+    "oskari-frontend-contrib": "file:../oskari-frontend-contrib"
+  },
+  "scripts": {
+    "build": "node ./node_modules/oskari-frontend/node_modules/webpack/bin/webpack.js --config ./node_modules/oskari-frontend/webpack.config.js --mode production --progress",
+    "start": "node ./node_modules/oskari-frontend/node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./node_modules/oskari-frontend/webpack.config.js --hot --env.appdef=apps",
+    "test": "eslint ."
+  },
+  "private": true,
+  "devDependencies": {
+    "eslint": "^4.6.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
+  }
+}
