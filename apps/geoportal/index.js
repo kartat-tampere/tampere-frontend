@@ -32,7 +32,7 @@ jQuery(document).ready(function () {
         type: 'POST',
         dataType: 'json',
         data: getAppSetupParams,
-        url: '/action?action_route=GetAppSetup',
+        url: '/oskari/action?action_route=GetAppSetup',
         success: function (appSetup) {
             var app = Oskari.app;
             if (!appSetup.startupSequence) {
