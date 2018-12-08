@@ -48,5 +48,6 @@ import 'oskari-lazy-loader?admin-hierarchical-layerlist!oskari-frontend/packages
 //import 'oskari-lazy-loader?admin-layerselector!oskari-frontend/packages/integration/bundle/bb/bundle.js';
 import 'oskari-lazy-loader?admin-layerrights!oskari-frontend/packages/framework/bundle/admin-layerrights/bundle.js';
 import 'oskari-lazy-loader?admin!oskari-frontend/packages/admin/bundle/admin/bundle.js';
+import 'oskari-lazy-loader?admin-wfs-search-channel!oskari-frontend-contrib/packages/tampere/bundle/admin-wfs-search-channel/bundle.js';
 
 import './css/overwritten.css';
