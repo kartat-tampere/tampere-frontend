@@ -44,9 +44,10 @@ import 'oskari-loader!oskari-frontend-contrib/packages/tampere/bundle/selected-f
 import 'oskari-lazy-loader?content-editor!oskari-frontend-contrib/packages/tampere/bundle/content-editor/bundle.js';
 // /tampereeeeee
 
+import 'oskari-lazy-loader?admin-hierarchical-layerlist!oskari-frontend/packages/integration/bundle/bb/bundle.js';
 import 'oskari-lazy-loader?admin-hierarchical-layerlist!oskari-frontend/packages/admin/bundle/admin-hierarchical-layerlist/bundle.js';
-//import 'oskari-lazy-loader?admin-layerselector!oskari-frontend/packages/integration/bundle/bb/bundle.js';
 import 'oskari-lazy-loader?admin-layerrights!oskari-frontend/packages/framework/bundle/admin-layerrights/bundle.js';
+import 'oskari-lazy-loader?admin-users!oskari-frontend/packages/framework/bundle/admin-users/bundle.js';
 import 'oskari-lazy-loader?admin!oskari-frontend/packages/admin/bundle/admin/bundle.js';
 import 'oskari-lazy-loader?admin-wfs-search-channel!oskari-frontend-contrib/packages/tampere/bundle/admin-wfs-search-channel/bundle.js';
 
