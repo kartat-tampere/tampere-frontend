@@ -4,33 +4,29 @@
  * @class Oskari.elf.lang.overrides.Bundle
  */
 Oskari.clazz.define(
-    'Oskari.language.Bundle',
+    'Oskari.file-upload.Bundle',
     function () {},
     {
         create: function () {
-            return this;
+            var inst = Oskari.clazz.create('Oskari.file-upload.BundleInstance');
+            return inst;
         },
         start: function () {},
         stop: function () {}
     },
     {
         source: {
-            scripts: [],
+            scripts: [
+                {
+                    type: 'text/javascript',
+                    src: './instance.js'
+                }
+            ],
             locales: [
                 {
                     lang: 'fi',
                     type: 'text/javascript',
                     src: './resources/locale/fi.js'
-                },
-                {
-                    lang: 'sv',
-                    type: 'text/javascript',
-                    src: './resources/locale/sv.js'
-                },
-                {
-                    lang: 'en',
-                    type: 'text/javascript',
-                    src: './resources/locale/en.js'
                 }
             ]
         }
@@ -38,6 +34,6 @@ Oskari.clazz.define(
 );
 
 Oskari.bundle_manager.installBundleClass(
-    'lang-overrides',
-    'Oskari.language.Bundle'
+    'file-upload',
+    'Oskari.file-upload.Bundle'
 );
