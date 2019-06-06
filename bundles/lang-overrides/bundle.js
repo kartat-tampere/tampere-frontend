@@ -1,7 +1,7 @@
 /**
  * Definition for bundle. See source for details.
  *
- * @class Oskari.elf.lang.overrides.Bundle
+ * @class Oskari.language.Bundle
  */
 Oskari.clazz.define(
     'Oskari.language.Bundle',
