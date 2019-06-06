@@ -1,5 +1,7 @@
 import React from 'react';
 
 export const FileUploadPanel = () => {
-    return <div>TODO</div>;
+    return <div>TODO
+        <input type="file" />
+    </div>;
 };
