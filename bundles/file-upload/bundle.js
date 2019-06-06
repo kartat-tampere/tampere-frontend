@@ -8,8 +8,7 @@ Oskari.clazz.define(
     function () {},
     {
         create: function () {
-            var inst = Oskari.clazz.create('Oskari.file-upload.BundleInstance');
-            return inst;
+            return Oskari.clazz.create('Oskari.file-upload.BundleInstance');
         },
         start: function () {},
         stop: function () {}
