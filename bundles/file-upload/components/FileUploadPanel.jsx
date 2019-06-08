@@ -2,13 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { LayerDetails } from "./LayerDetails";
+import { FileInput } from "./FileInput";
 
 export const FileUploadPanel = ({ layer, onSubmit, ...other }) => {
   return (
     <div>
       <LayerDetails {...layer} />
       <form onSubmit={onSubmit}>
-        <input type="file" />
+        <FileInput />
         <input type="submit" />
       </form>
     </div>
