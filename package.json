@@ -9,7 +9,8 @@
     "oskari-frontend": "file:../oskari-frontend",
     "oskari-frontend-contrib": "file:../oskari-frontend-contrib",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.3.1"
   },
   "scripts": {
     "build": "node ./node_modules/oskari-frontend/node_modules/webpack/bin/webpack.js --config ./node_modules/oskari-frontend/webpack.config.js --mode production --progress",
