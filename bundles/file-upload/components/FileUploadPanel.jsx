@@ -1,7 +1,21 @@
-import React from 'react';
+import React from "react";
+import PropTypes from "prop-types";
 
-export const FileUploadPanel = () => {
-    return <div>TODO
+import { LayerDetails } from "./LayerDetails";
+
+export const FileUploadPanel = ({ layer, onSubmit, ...other }) => {
+  return (
+    <div>
+      <LayerDetails {...layer} />
+      <form onSubmit={onSubmit}>
         <input type="file" />
-    </div>;
+        <input type="submit" />
+      </form>
+    </div>
+  );
+};
+
+FileUploadPanel.propTypes = {
+  layer: PropTypes.any,
+  onSubmit: PropTypes.func
 };
