@@ -1,29 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { LayerDetails } from "./LayerDetails";
-import { FileInput } from "./FileInput";
+import { FileUploadForm } from "./FileUploadForm";
 
-function handleFiles(fileList) {
-  if (!fileList) {
-    return false;
+export class FileUploadPanel extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      files: []
+    };
   }
-  fileList.forEach(element => {
-    console.log(element);
-  });
+  addFile(file) {
+    this.setState((state, props) => {
+      console.log(state.files);
+      return { files: state.files.concat([file]) };
+    });
+  }
+  removeFile(file) {
+    this.setState((state, props) => {
+      console.log(state.files);
+      let files = state.files.filter(f => f !== file);
+      return { files };
+    });
+  }
+  onSubmit(e) {
+    e.preventDefault();
+    this.props.onSubmit(this.state.files);
+  }
+  render() {
+    return (
+      <FileUploadForm
+        layer={this.props.layer}
+        files={this.state.files}
+        onSubmit={e => this.onSubmit(e)}
+        onRemoveFile={file => this.removeFile(file)}
+        onAddFile={file => this.addFile(file)}
+      />
+    );
+  }
 }
-
-export const FileUploadPanel = ({ layer, onSubmit, ...other }) => {
-  return (
-    <div>
-      <LayerDetails {...layer} />
-      <form onSubmit={onSubmit}>
-        <FileInput onFiles={handleFiles} />
-        <input type="submit" />
-      </form>
-    </div>
-  );
-};
 
 FileUploadPanel.propTypes = {
   layer: PropTypes.any,

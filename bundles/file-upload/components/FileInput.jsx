@@ -16,10 +16,11 @@ const ButtonLabel = styled("label")`
   display: block;
   text-align: center;
   border: 1px solid black;
+  cursor: pointer;
   border-radius: 5px;
   padding: 10px;
   margin: 10px;
-  background-color: ghostwhite;
+  background-color: orange;
 `;
 
 export const FileInput = ({ onFiles }) => {
