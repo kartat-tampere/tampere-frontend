@@ -1,12 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { LayerDetails } from "./LayerDetails";
 import { FileInput } from "./FileInput";
 import { FileDisplay } from "./FileDisplay";
 
 export const FileUploadForm = ({
-  layer,
   files,
   onSubmit,
   onAddFile,
@@ -23,7 +21,6 @@ export const FileUploadForm = ({
 
   return (
     <div>
-      <LayerDetails {...layer} />
       <form onSubmit={onSubmit}>
         <FileInput onFiles={handleFiles} />
         <div>
@@ -39,7 +36,6 @@ export const FileUploadForm = ({
 };
 
 FileUploadForm.propTypes = {
-  layer: PropTypes.any,
   files: PropTypes.any,
   onSubmit: PropTypes.func,
   onAddFile: PropTypes.func,
