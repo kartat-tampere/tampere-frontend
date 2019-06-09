@@ -33,6 +33,9 @@ export class FileUploadPanel extends React.Component {
     e.preventDefault();
     this.props.onSubmit(this.state);
   }
+  hasContent() {
+    return this.state.files.length || !!this.state.layerAttribute;
+  }
   render() {
     return (
       <>
@@ -47,7 +50,9 @@ export class FileUploadPanel extends React.Component {
           onSubmit={e => this.onSubmit(e)}
           onRemoveFile={file => this.removeFile(file)}
           onAddFile={file => this.addFile(file)}
-        />
+        >
+          <input type="submit" disabled={!this.hasContent()} value="Tallenna" />
+        </FileUploadForm>
       </>
     );
   }

@@ -8,7 +8,9 @@ export const FileUploadForm = ({
   files,
   onSubmit,
   onAddFile,
-  onRemoveFile
+  onRemoveFile,
+  children,
+  ...other
 }) => {
   function handleFiles(fileList) {
     if (!fileList || typeof onAddFile !== "function") {
@@ -29,7 +31,7 @@ export const FileUploadForm = ({
               <FileDisplay key={f.name} file={f} onRemove={onRemoveFile} />
             ))}
         </div>
-        <input type="submit" disabled={!files.length} />
+        {children}
       </form>
     </div>
   );
