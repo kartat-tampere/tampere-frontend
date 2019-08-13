@@ -17,8 +17,6 @@ import 'oskari-loader!oskari-frontend/packages/framework/bundle/statehandler/bun
 import 'oskari-loader!oskari-frontend/packages/mapping/ol3/infobox/bundle.js';
 
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/search/bundle.js';
-//import 'oskari-loader!oskari-frontend/packages/framework/bundle/layerselector2/bundle.js';
-//import 'oskari-loader!oskari-frontend/packages/framework/bundle/layerselection2/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/hierarchical-layerlist/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/personaldata/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/publisher2/bundle.js';
@@ -37,6 +35,7 @@ import 'oskari-loader!oskari-frontend/packages/framework/bundle/printout/bundle.
 //import 'oskari-loader!oskari-frontend/packages/framework/bundle/myplacesimport/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/coordinatetool/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol3/maprotator/bundle.js';
+import 'oskari-loader!oskari-frontend/packages/framework/bundle/timeseries/bundle.js';
 
 // tampereeeeee
 import 'oskari-loader!oskari-frontend-contrib/packages/tampere/bundle/search-from-channels/bundle.js';
