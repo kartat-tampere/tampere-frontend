@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import { FileUploadForm } from "./FileUploadForm";
-import { ProgressBar } from "./ProgressBar";
 import { LayerDetails } from "./LayerDetails";
 
 export class FileUploadPanel extends React.Component {
@@ -39,13 +38,13 @@ export class FileUploadPanel extends React.Component {
   render() {
     return (
       <>
-        <ProgressBar value={this.state.files.length} />
         <LayerDetails
           {...this.props.layer}
           onPropertyChange={value => this.changeLayerAttribute(value)}
         />
         <FileUploadForm
           layer={this.props.layer}
+          fileProgress={this.props.fileProgress || {}}
           files={this.state.files}
           onSubmit={e => this.onSubmit(e)}
           onRemoveFile={file => this.removeFile(file)}
@@ -60,5 +59,6 @@ export class FileUploadPanel extends React.Component {
 
 FileUploadPanel.propTypes = {
   layer: PropTypes.any,
+  fileProgress: PropTypes.any,
   onSubmit: PropTypes.func
 };
