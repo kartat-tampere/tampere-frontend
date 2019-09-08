@@ -72,6 +72,10 @@ function uploadFile(files) {
   });
 
   formData.append("layerId", "1");
-  files.forEach(f => formData.append("file", f));
+  files.forEach(f => {
+    formData.append("file", f);
+    formData.append("locale_" + f.name, f.locale);
+    
+  });
   xhr.send(formData);
 }

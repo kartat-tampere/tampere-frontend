@@ -11,6 +11,7 @@ export const FileUploadForm = ({
   onSubmit,
   onAddFile,
   onRemoveFile,
+  onRenameFile,
   children,
   ...other
 }) => {
@@ -33,7 +34,7 @@ export const FileUploadForm = ({
           {files &&
             files.map(f => (
               <>
-                <FileDisplay key={f.name} file={f} onRemove={onRemoveFile} />
+                <FileDisplay key={f.name} file={f} onRemove={onRemoveFile} onRename={onRenameFile} />
                 <ProgressBar
                   key={f + fileProgress[f]}
                   value={fileProgress[f] || 0}
@@ -52,5 +53,6 @@ FileUploadForm.propTypes = {
   fileProgress: PropTypes.any,
   onSubmit: PropTypes.func,
   onAddFile: PropTypes.func,
-  onRemoveFile: PropTypes.func
+  onRemoveFile: PropTypes.func,
+  onRenameFile:  PropTypes.func
 };

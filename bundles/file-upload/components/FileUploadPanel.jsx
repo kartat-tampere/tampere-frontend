@@ -23,6 +23,13 @@ export class FileUploadPanel extends React.Component {
       return { ...state, files };
     });
   }
+  onRenameFile(file, name) {
+    this.setState((state, props) => {
+      let modified = state.files.find(f => f === file);
+      modified.locale = name;
+      return { ...state };
+    });
+  }
   changeLayerAttribute(newAttr) {
     this.setState((state, props) => {
       return { ...state, layerAttribute: newAttr };
@@ -48,6 +55,7 @@ export class FileUploadPanel extends React.Component {
           files={this.state.files}
           onSubmit={e => this.onSubmit(e)}
           onRemoveFile={file => this.removeFile(file)}
+          onRenameFile={(file, name) => this.onRenameFile(file, name)}
           onAddFile={file => this.addFile(file)}
         >
           <input type="submit" disabled={!this.hasContent()} value="Tallenna" />
