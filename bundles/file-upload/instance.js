@@ -71,7 +71,7 @@ function uploadFile(files) {
     }
   });
 
-  formData.append("layer", "tasonID");
+  formData.append("layerId", "1");
   files.forEach(f => formData.append("file", f));
   xhr.send(formData);
 }
