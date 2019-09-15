@@ -8,15 +8,21 @@ import { uploadFiles,
     listFilesForLayer,
     listFilesForFeature,
     openFile } from './service/FileService';
+import { addLayerTool,
+    setupLayerTools,
+    getLayerService } from './service/LayerHelper';
 
 const BasicBundle = Oskari.clazz.get('Oskari.BasicBundle');
-let mainUI = jQuery('<div></div>');
+const flyout = Oskari.clazz.create(
+    'Oskari.userinterface.extension.ExtraFlyout',
+    'Lisää tiedostoja'
+);
+flyout.move(170, 0, true);
+flyout.makeDraggable();
+const mainUI = jQuery('<div></div>');
+flyout.setContent(mainUI);
 
-const layer = {
-    id: 1,
-    name: 'Moi',
-    attr: 'id'
-};
+let layer = {};
 
 Oskari.clazz.defineES(
     'Oskari.file-upload.BundleInstance',
@@ -24,17 +30,22 @@ Oskari.clazz.defineES(
         constructor () {
             super();
             this.__name = 'file-upload';
+            this.eventHandlers = {
+                'MapLayerEvent': (event) => {
+                    if (event.getOperation() !== 'add') {
+                        // only handle add layer
+                        return;
+                    }
+                    if (event.getLayerId()) {
+                        addLayerTool(event.getLayerId(), showFlyout);
+                    } else { // initial layer load
+                        setupLayerTools(showFlyout);
+                    }
+                }
+            };
         }
         _startImpl () {
-            var flyout = Oskari.clazz.create(
-                'Oskari.userinterface.extension.ExtraFlyout',
-                'Lisää tiedostoja'
-            );
-            flyout.show();
-            flyout.move(170, 0, true);
-            flyout.makeDraggable();
-            update(layer);
-            flyout.setContent(mainUI);
+            setupLayerTools(showFlyout);
             /*
             listLayersWithFiles((msg) => alert(`List of layers ${msg}`));
             listFilesForLayer(layer.id, (msg) => alert(`List of files ${JSON.stringify(msg)}`));
@@ -45,7 +56,25 @@ Oskari.clazz.defineES(
     }
 );
 
-function update (layer, progress) {
+function showFlyout (layerId) {
+    const maplayer = getLayerService().findMapLayer(layerId);
+    layer = {
+        id: maplayer.getId(),
+        name: maplayer.getName(),
+        attr: maplayer.getAttributes('attachmentKey') || 'id'
+    };
+    listFilesForLayer(layer.id, function (files) {
+        layer = {
+            files,
+            ...layer
+        };
+        updateUI(layer);
+    });
+    flyout.show();
+    updateUI(layer);
+}
+
+function updateUI (layer, progress) {
     ReactDOM.render(
     <>
       <LayerDetails
@@ -60,17 +89,20 @@ function update (layer, progress) {
 
 function changeLayerAttr (value) {
     layer.attr = value;
-    update(layer);
+    updateUI(layer);
 }
 
 function submitFiles (data, resetCB = () => {}) {
     uploadFiles(
         layer.id,
         data.files,
-        (progress) => update(layer, progress),
+        (progress) => updateUI(layer, progress),
         () => {
             alert('Tiedostot lisätty');
             resetCB();
         },
-        () => alert('Virhe tiedostojen siirrossa'));
+        () => {
+            updateUI(layer, 0);
+            alert('Virhe tiedostojen siirrossa');
+        });
 }

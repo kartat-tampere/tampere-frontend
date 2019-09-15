@@ -1,24 +1,32 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export const LayerDetails = props => {
-  return (
-    <div>
-      <h3>{`Taso: ${props.name}` || 'Virhe: Tasoa ei valittu'}</h3>
-      <label>
+    return (
+        <div>
+            <h3>{`Taso: ${props.name}` || 'Virhe: Tasoa ei valittu'}</h3>
+            { /*
+            <label>
         Ominaisuustieto jolla tiedostot liitetään:
-        <input
-          type="text"
-          onChange={e => props.onPropertyChange(e.target.value)}
-          value={props.attr || ''}
-        />
-      </label>
-    </div>
-  );
+                <input
+                    type="text"
+                    onChange={e => props.onPropertyChange(e.target.value)}
+                    value={props.attr || ''}
+                />
+            </label>
+            */ }
+            <ul>
+                {props.files && props.files.map(f => (
+                    <li key={f.id}>Feature: {f.featureId} / {f.locale}</li>
+                ))}
+            </ul>
+        </div>
+    );
 };
 
 LayerDetails.propTypes = {
-  name: PropTypes.string,
-  attr: PropTypes.string,
-  onPropertyChange: PropTypes.func
+    name: PropTypes.string,
+    files: PropTypes.any,
+    attr: PropTypes.string,
+    onPropertyChange: PropTypes.func
 };
