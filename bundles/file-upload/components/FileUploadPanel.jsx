@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import { FileUploadForm } from "./FileUploadForm";
-import { LayerDetails } from "./LayerDetails";
-
 export class FileUploadPanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      files: [],
-      layerAttribute: ""
+      files: []
     };
   }
   addFile(file) {
@@ -30,43 +27,33 @@ export class FileUploadPanel extends React.Component {
       return { ...state };
     });
   }
-  changeLayerAttribute(newAttr) {
+  resetFiles() {
     this.setState((state, props) => {
-      return { ...state, layerAttribute: newAttr };
+      return { ...state, files: []};
     });
   }
   onSubmit(e) {
     e.preventDefault();
-    this.props.onSubmit(this.state);
+    this.props.onSubmit(this.state, () => this.resetFiles());
   }
   hasContent() {
-    return this.state.files.length || !!this.state.layerAttribute;
+    return this.state.files.length;
   }
   render() {
     return (
-      <>
-        <LayerDetails
-          {...this.props.layer}
-          onPropertyChange={value => this.changeLayerAttribute(value)}
-        />
         <FileUploadForm
-          layer={this.props.layer}
-          fileProgress={this.props.fileProgress || {}}
           files={this.state.files}
           onSubmit={e => this.onSubmit(e)}
           onRemoveFile={file => this.removeFile(file)}
           onRenameFile={(file, name) => this.onRenameFile(file, name)}
           onAddFile={file => this.addFile(file)}
         >
-          <input type="submit" disabled={!this.hasContent()} value="Tallenna" />
+          <input type="submit" disabled={!this.hasContent()} value="Lisää tiedostot" />
         </FileUploadForm>
-      </>
     );
   }
 }
 
 FileUploadPanel.propTypes = {
-  layer: PropTypes.any,
-  fileProgress: PropTypes.any,
   onSubmit: PropTypes.func
 };

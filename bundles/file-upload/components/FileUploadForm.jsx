@@ -3,19 +3,17 @@ import PropTypes from "prop-types";
 
 import { FileInput } from "./FileInput";
 import { FileDisplay } from "./FileDisplay";
-import { ProgressBar } from "./ProgressBar";
 
 export const FileUploadForm = ({
   files,
-  fileProgress = {},
   onSubmit,
   onAddFile,
   onRemoveFile,
   onRenameFile,
-  children,
-  ...other
+  children
 }) => {
-  function handleFiles(fileList) {
+
+  function handleFiles (fileList) {
     if (!fileList || typeof onAddFile !== "function") {
       return false;
     }
@@ -35,10 +33,6 @@ export const FileUploadForm = ({
             files.map(f => (
               <>
                 <FileDisplay key={f.name} file={f} onRemove={onRemoveFile} onRename={onRenameFile} />
-                <ProgressBar
-                  key={f + fileProgress[f]}
-                  value={fileProgress[f] || 0}
-                />
               </>
             ))}
         </div>
@@ -50,7 +44,6 @@ export const FileUploadForm = ({
 
 FileUploadForm.propTypes = {
   files: PropTypes.any,
-  fileProgress: PropTypes.any,
   onSubmit: PropTypes.func,
   onAddFile: PropTypes.func,
   onRemoveFile: PropTypes.func,

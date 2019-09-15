@@ -1,8 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { FileUploadPanel } from './components/FileUploadPanel';
+import { LayerDetails } from './components/LayerDetails';
+import { ProgressBar } from './components/ProgressBar';
+import { uploadFiles,
+    listLayersWithFiles,
+    listFilesForLayer,
+    listFilesForFeature,
+    openFile } from './service/FileService';
 
 const BasicBundle = Oskari.clazz.get('Oskari.BasicBundle');
+let mainUI = jQuery('<div></div>');
+
+const layer = {
+    id: 1,
+    name: 'Moi',
+    attr: 'id'
+};
 
 Oskari.clazz.defineES(
     'Oskari.file-upload.BundleInstance',
@@ -12,69 +26,51 @@ Oskari.clazz.defineES(
             this.__name = 'file-upload';
         }
         _startImpl () {
-            const root = document.getElementById('loginbar');
-            if (!root) {
-                alert('prob');
-            }
-
             var flyout = Oskari.clazz.create(
                 'Oskari.userinterface.extension.ExtraFlyout',
-                'File upload'
+                'Lisää tiedostoja'
             );
             flyout.show();
             flyout.move(170, 0, true);
             flyout.makeDraggable();
-
-            var mainUI = jQuery('<div></div>');
-            ReactDOM.render(
-        <>
-          <FileUploadPanel onSubmit={submitFiles} />
-        </>,
-        mainUI[0]
-            );
+            update(layer);
             flyout.setContent(mainUI);
+            /*
+            listLayersWithFiles((msg) => alert(`List of layers ${msg}`));
+            listFilesForLayer(layer.id, (msg) => alert(`List of files ${JSON.stringify(msg)}`));
+            listFilesForFeature(layer.id, '2019-06-03', (msg) => alert(`List of files for feature ${JSON.stringify(msg)}`));
+            openFile(layer.id, 16);
+            */
         }
     }
 );
 
-function submitFiles (data) {
-    /*
-  alert(
-    `Attr: ${data.layerAttribute} \nTiedostot: ${data.files
-      .map(f => f.name)
-      .join(", ")}`
-  ); */
-    uploadFile(data.files); // .forEach(uploadFile);
+function update (layer, progress) {
+    ReactDOM.render(
+    <>
+      <LayerDetails
+          {...layer}
+          onPropertyChange={value => changeLayerAttr(value)}
+      />
+      <FileUploadPanel onSubmit={submitFiles} />
+      <ProgressBar value={progress || 0} />
+    </>,
+    mainUI[0]);
 }
 
-function updateProgress (file, progress) {
-    console.log('Progress on ' + file.name + ': ' + progress);
+function changeLayerAttr (value) {
+    layer.attr = value;
+    update(layer);
 }
 
-function uploadFile (files) {
-    var url = Oskari.urls.getRoute('WFSAttachments');
-    var xhr = new XMLHttpRequest();
-    var formData = new FormData();
-    xhr.open('POST', url, true);
-    xhr.setRequestHeader('X-XSRF-TOKEN', Oskari.app.getXSRFToken());
-
-    // Add following event listener
-    xhr.upload.addEventListener('progress', function (e) {
-        updateProgress(files, (e.loaded * 100.0) / e.total || 100);
-    });
-
-    xhr.addEventListener('readystatechange', function (e) {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            // Done. Inform the user
-        } else if (xhr.readyState === 4 && xhr.status !== 200) {
-            // Error. Inform the user
-        }
-    });
-
-    formData.append('layerId', '1');
-    files.forEach(f => {
-        formData.append('file', f);
-        formData.append('locale_' + f.name, f.locale);
-    });
-    xhr.send(formData);
+function submitFiles (data, resetCB = () => {}) {
+    uploadFiles(
+        layer.id,
+        data.files,
+        (progress) => update(layer, progress),
+        () => {
+            alert('Tiedostot lisätty');
+            resetCB();
+        },
+        () => alert('Virhe tiedostojen siirrossa'));
 }
