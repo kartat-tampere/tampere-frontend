@@ -15,18 +15,12 @@ export const LayerDetails = props => {
                 />
             </label>
             */ }
-            <ul>
-                {props.files && props.files.map(f => (
-                    <li key={f.id}>Feature: {f.featureId} / {f.locale}</li>
-                ))}
-            </ul>
         </div>
     );
 };
 
 LayerDetails.propTypes = {
     name: PropTypes.string,
-    files: PropTypes.any,
     attr: PropTypes.string,
     onPropertyChange: PropTypes.func
 };

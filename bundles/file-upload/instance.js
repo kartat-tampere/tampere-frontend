@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { FileUploadPanel } from './components/FileUploadPanel';
 import { LayerDetails } from './components/LayerDetails';
 import { ProgressBar } from './components/ProgressBar';
+import { FileListing } from './components/FileListing';
 import { FileService } from './service/FileService';
 import { LayerHelper } from './service/LayerHelper';
 
@@ -35,20 +36,73 @@ Oskari.clazz.defineES(
                     } else { // initial layer load
                         LayerHelper.setupLayerTools(showFlyout);
                     }
+                },
+                'GetInfoResultEvent': (event) => {
+                    addFileListing(event);
                 }
             };
         }
         _startImpl () {
             LayerHelper.setupLayerTools(showFlyout);
-            /*
-            listLayersWithFiles((msg) => alert(`List of layers ${msg}`));
-            listFilesForLayer(layer.id, (msg) => alert(`List of files ${JSON.stringify(msg)}`));
-            listFilesForFeature(layer.id, '2019-06-03', (msg) => alert(`List of files for feature ${JSON.stringify(msg)}`));
-            openFile(layer.id, 16);
-            */
         }
     }
 );
+
+let eventDetection = [];
+
+function addFileListing (gfiResultEvent) {
+    // Hacky way of detecting if we sent this...
+    var filtered = eventDetection.filter(e => e !== gfiResultEvent);
+    if (filtered.length !== eventDetection.length) {
+        // remove from detection
+        eventDetection = filtered;
+        // Don't react again
+        return;
+    }
+    // Nope, all good, not going to infinity and beyond!
+    var { layerId, features, lonlat } = gfiResultEvent.getData();
+    const featureId = getAttachmentFeatureId(layerId, features);
+
+    FileService.listFilesForFeature(layerId, featureId, (files) => {
+        if (!files.length) {
+            // no attachments
+            return;
+        }
+        var infoEvent = Oskari.eventBuilder('GetInfoResultEvent')({
+            layerId,
+            features: [{
+                layerId,
+                presentationType: 'Sami hack to inject more HTML on GFI popup!',
+                content: getFileLinksForFeature(layerId, files)
+            }],
+            lonlat,
+            // just to force "WMS" style parsing
+            via: 'ajax'
+        });
+        eventDetection.push(infoEvent);
+        Oskari.getSandbox().notifyAll(infoEvent);
+    });
+}
+
+function getAttachmentFeatureId (layerId, features) {
+    if (features.length !== 1) {
+        return;
+    }
+    const featureProps = features[0];
+    const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
+    const featureMappingField = 'lehtinro';
+    // -> maplayer.getAttributes('attachmentKey') || 'id'
+    const fieldIndex = maplayer.getFields().indexOf(featureMappingField);
+    return featureProps[fieldIndex];
+}
+
+function getFileLinksForFeature (layerId, files) {
+    // TODO: bind FileService.openFile(layerId, f.id)
+    const html = files.map(f => `<a class="button" target="_blank" rel="noopener noreferer" href="https://google.fi">${f.locale}</a>`);
+    return `<div>
+        <b>Tiedostot:</b> ${html.join(' ')}
+    </div>`;
+}
 
 function showFlyout (layerId) {
     const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
@@ -77,6 +131,7 @@ function updateUI (layer, progress) {
       />
       <FileUploadPanel onSubmit={submitFiles} />
       <ProgressBar value={progress || 0} />
+      <FileListing files={layer.files || []} />
     </>,
     mainUI[0]);
 }
