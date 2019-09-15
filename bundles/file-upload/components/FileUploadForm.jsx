@@ -28,12 +28,9 @@ export const FileUploadForm = ({
             <form onSubmit={onSubmit}>
                 <FileInput onFiles={handleFiles} />
                 <div>
-                    {files &&
-            files.map(f => (
-              <>
-                <FileDisplay key={f.name} file={f} onRemove={onRemoveFile} onRename={onRenameFile} />
-              </>
-            ))}
+                    {files && files.map(f => (
+                        <FileDisplay key={f.name} file={f} onRemove={onRemoveFile} onRename={onRenameFile} />
+                    ))}
                 </div>
                 {children}
             </form>
