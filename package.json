@@ -24,7 +24,7 @@
     "sprite": "node ./node_modules/oskari-frontend/webpack/sprite.js",
     "FIXME___po_stinstall": "npm run dev-mode",
     "storybook": "start-storybook",
-    "test": "eslint ."
+    "test": "eslint --config ./node_modules/oskari-frontend/.eslintrc.js bundles"
   },
   "private": true
 }
