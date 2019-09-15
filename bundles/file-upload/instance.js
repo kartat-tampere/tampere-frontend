@@ -3,14 +3,8 @@ import ReactDOM from 'react-dom';
 import { FileUploadPanel } from './components/FileUploadPanel';
 import { LayerDetails } from './components/LayerDetails';
 import { ProgressBar } from './components/ProgressBar';
-import { uploadFiles,
-    listLayersWithFiles,
-    listFilesForLayer,
-    listFilesForFeature,
-    openFile } from './service/FileService';
-import { addLayerTool,
-    setupLayerTools,
-    getLayerService } from './service/LayerHelper';
+import { FileService } from './service/FileService';
+import { LayerHelper } from './service/LayerHelper';
 
 const BasicBundle = Oskari.clazz.get('Oskari.BasicBundle');
 const flyout = Oskari.clazz.create(
@@ -37,15 +31,15 @@ Oskari.clazz.defineES(
                         return;
                     }
                     if (event.getLayerId()) {
-                        addLayerTool(event.getLayerId(), showFlyout);
+                        LayerHelper.addLayerTool(event.getLayerId(), showFlyout);
                     } else { // initial layer load
-                        setupLayerTools(showFlyout);
+                        LayerHelper.setupLayerTools(showFlyout);
                     }
                 }
             };
         }
         _startImpl () {
-            setupLayerTools(showFlyout);
+            LayerHelper.setupLayerTools(showFlyout);
             /*
             listLayersWithFiles((msg) => alert(`List of layers ${msg}`));
             listFilesForLayer(layer.id, (msg) => alert(`List of files ${JSON.stringify(msg)}`));
@@ -57,13 +51,13 @@ Oskari.clazz.defineES(
 );
 
 function showFlyout (layerId) {
-    const maplayer = getLayerService().findMapLayer(layerId);
+    const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
     layer = {
         id: maplayer.getId(),
         name: maplayer.getName(),
         attr: maplayer.getAttributes('attachmentKey') || 'id'
     };
-    listFilesForLayer(layer.id, function (files) {
+    FileService.listFilesForLayer(layer.id, function (files) {
         layer = {
             files,
             ...layer
@@ -93,7 +87,7 @@ function changeLayerAttr (value) {
 }
 
 function submitFiles (data, resetCB = () => {}) {
-    uploadFiles(
+    FileService.uploadFiles(
         layer.id,
         data.files,
         (progress) => updateUI(layer, progress),

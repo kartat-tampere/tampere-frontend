@@ -5,7 +5,7 @@
  * @param  {Function} toolCB function to call on click
  * @param  {Boolean} suppressEvent true to not send event about updated layer (optional)
  */
-export function addLayerTool (layer, toolCB, suppressEvent) {
+function addLayerTool (layer, toolCB, suppressEvent) {
     if (!isAdmin()) {
         return;
     }
@@ -37,7 +37,7 @@ export function addLayerTool (layer, toolCB, suppressEvent) {
  * Adds tools for all layers
  * @param  {Function} toolCB function to call on click
  */
-export function setupLayerTools (toolCB) {
+function setupLayerTools (toolCB) {
     if (!isAdmin()) {
         return;
     }
@@ -57,7 +57,13 @@ function isAdmin () {
         .find(r => r.name.includes('Admin'));
 }
 
-export function getLayerService () {
+function getLayerService () {
     return Oskari.getSandbox()
         .getService('Oskari.mapframework.service.MapLayerService');
 }
+
+export const LayerHelper = {
+    addLayerTool,
+    setupLayerTools,
+    getLayerService
+};

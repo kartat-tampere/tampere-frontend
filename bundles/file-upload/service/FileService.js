@@ -1,6 +1,6 @@
 const noopFunc = () => {};
 
-export function uploadFiles (layerId, files, progressCB = noopFunc, successCB = noopFunc, errorCB = noopFunc) {
+function uploadFiles (layerId, files, progressCB = noopFunc, successCB = noopFunc, errorCB = noopFunc) {
     progressCB(0);
     var url = Oskari.urls.getRoute('WFSAttachments');
     var xhr = new XMLHttpRequest();
@@ -33,26 +33,34 @@ export function uploadFiles (layerId, files, progressCB = noopFunc, successCB = 
     xhr.send(formData);
 }
 
-export function listLayersWithFiles (successCB) {
+function listLayersWithFiles (successCB) {
     var url = Oskari.urls.getRoute('WFSAttachments');
     jQuery.get(url, successCB);
 }
 
-export function listFilesForLayer (layerId, successCB) {
+function listFilesForLayer (layerId, successCB) {
     var url = Oskari.urls.getRoute('WFSAttachments') +
         `&layerId=${layerId}`;
     jQuery.get(url + `&layerId=${layerId}`, successCB);
 }
 
-export function listFilesForFeature (layerId, featureId, successCB) {
+function listFilesForFeature (layerId, featureId, successCB) {
     var url = Oskari.urls.getRoute('WFSAttachments') +
         `&layerId=${layerId}&featureId=${featureId}`;
     jQuery.get(url, successCB);
 }
 
-export function openFile (layerId, fileId) {
+function openFile (layerId, fileId) {
     var url = Oskari.urls.getRoute('WFSAttachments') +
         `&layerId=${layerId}&fileId=${fileId}`;
     console.log(url);
     window.open(url, '_blank');
 }
+
+export const FileService = {
+    uploadFiles,
+    listLayersWithFiles,
+    listFilesForLayer,
+    listFilesForFeature,
+    openFile
+};
