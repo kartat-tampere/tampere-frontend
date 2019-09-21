@@ -18,6 +18,7 @@ const mainUI = jQuery('<div></div>');
 flyout.setContent(mainUI);
 
 let layer = {};
+const KEY_ATTRIBUTES_ATTACHMENT = 'attachmentKey';
 
 Oskari.clazz.defineES(
     'Oskari.file-upload.BundleInstance',
@@ -72,7 +73,7 @@ function addFileListing (gfiResultEvent) {
             layerId,
             features: [{
                 layerId,
-                presentationType: 'Sami hack to inject more HTML on GFI popup!',
+                presentationType: 'Hack to inject more HTML on GFI popup!',
                 content: getFileLinksForFeature(layerId, files)
             }],
             lonlat,
@@ -90,15 +91,15 @@ function getAttachmentFeatureId (layerId, features) {
     }
     const featureProps = features[0];
     const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
-    const featureMappingField = 'lehtinro';
-    // -> maplayer.getAttributes('attachmentKey') || 'id'
+    const featureMappingField = maplayer.getAttributes(KEY_ATTRIBUTES_ATTACHMENT) || 'id';
     const fieldIndex = maplayer.getFields().indexOf(featureMappingField);
     return featureProps[fieldIndex];
 }
 
 function getFileLinksForFeature (layerId, files) {
-    // TODO: bind FileService.openFile(layerId, f.id)
-    const html = files.map(f => `<a class="button" target="_blank" rel="noopener noreferer" href="https://google.fi">${f.locale}</a>`);
+    var url = Oskari.urls.getRoute('WFSAttachments') + `&layerId=${layerId}&fileId=`;
+    const html = files.map(f => `<a class="button" target="_blank" 
+        rel="noopener noreferer" href="${url + f.id}">${f.locale}</a>`);
     return `<div>
         <b>Tiedostot:</b> ${html.join(' ')}
     </div>`;
@@ -109,7 +110,7 @@ function showFlyout (layerId) {
     layer = {
         id: maplayer.getId(),
         name: maplayer.getName(),
-        attr: maplayer.getAttributes('attachmentKey') || 'id'
+        attr: maplayer.getAttributes(KEY_ATTRIBUTES_ATTACHMENT) || 'id'
     };
     FileService.listFilesForLayer(layer.id, function (files) {
         layer = {
@@ -127,7 +128,8 @@ function updateUI (layer, progress) {
     <>
       <LayerDetails
           {...layer}
-          onPropertyChange={value => changeLayerAttr(value)}
+          onPropertyChange={value => changeLayerAttr(value, false)}
+          onSave={value => changeLayerAttr(value, true)}
       />
       <FileUploadPanel onSubmit={submitFiles} />
       <ProgressBar value={progress || 0} />
@@ -136,8 +138,23 @@ function updateUI (layer, progress) {
     mainUI[0]);
 }
 
-function changeLayerAttr (value) {
-    layer.attr = value;
+function changeLayerAttr (value, callServer) {
+    // save to server
+    if (callServer) {
+        const maplayer = LayerHelper.getLayerService().findMapLayer(layer.id);
+        const attrib = maplayer.getAttributes();
+        const oldValue = attrib[KEY_ATTRIBUTES_ATTACHMENT];
+        attrib[KEY_ATTRIBUTES_ATTACHMENT] = value;
+        maplayer.setAttributes(attrib);
+        var url = Oskari.urls.getRoute('WFSAttachmentsLayer') + `&layerId=${layer.id}&attachmentKey=${value}`;
+        jQuery.ajax({
+            url: url,
+            type: 'PUT',
+            // restore old value on error
+            error: () => changeLayerAttr(oldValue, false)
+        });
+    }
+    layer.attr = value || 'id';
     updateUI(layer);
 }
 

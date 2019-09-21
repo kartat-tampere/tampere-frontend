@@ -53,7 +53,6 @@ function listFilesForFeature (layerId, featureId, successCB) {
 function openFile (layerId, fileId) {
     var url = Oskari.urls.getRoute('WFSAttachments') +
         `&layerId=${layerId}&fileId=${fileId}`;
-    console.log(url);
     window.open(url, '_blank');
 }
 
