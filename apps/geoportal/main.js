@@ -41,6 +41,9 @@ import 'oskari-loader!oskari-frontend/packages/framework/bundle/timeseries/bundl
 import 'oskari-loader!oskari-frontend-contrib/packages/tampere/bundle/search-from-channels/bundle.js';
 import 'oskari-loader!oskari-frontend-contrib/packages/tampere/bundle/selected-featuredata/bundle.js';
 import 'oskari-lazy-loader?content-editor!oskari-frontend-contrib/packages/tampere/bundle/content-editor/bundle.js';
+
+import 'oskari-loader!../../bundles/file-upload/bundle.js';
+
 // /tampereeeeee
 
 import 'oskari-lazy-loader?admin-hierarchical-layerlist!oskari-frontend/packages/integration/bundle/bb/bundle.js';

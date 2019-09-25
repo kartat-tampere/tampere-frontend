@@ -39,6 +39,9 @@ jQuery(document).ready(function () {
                 jQuery('#mapdiv').append('Unable to start');
                 return;
             }
+            appSetup.startupSequence.push({
+                bundlename: 'file-upload'
+            });
             app.init(appSetup);
             app.startApplication(function () {
                 var sb = Oskari.getSandbox();
