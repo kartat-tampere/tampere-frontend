@@ -97,9 +97,16 @@ function getAttachmentFeatureId (layerId, features) {
 }
 
 function getFileLinksForFeature (layerId, files) {
-    var url = Oskari.urls.getRoute('WFSAttachments') + `&layerId=${layerId}&fileId=`;
-    const html = files.map(f => `<a class="button" target="_blank" 
-        rel="noopener noreferer" href="${url + f.id}">${f.locale}</a>`);
+    var url = Oskari.urls.getRoute('WFSAttachments') + `&layerId=${layerId}`;
+    const html = files.map(f => {
+        let fileLink = `&fileId=${f.id}`;
+        if (f.external) {
+            const fileName = encodeURIComponent(f.locale) + '.' + f.fileExtension;
+            fileLink = `&featureId=${f.featureId}&name=${fileName}`;
+        }
+        return `<a class="button" target="_blank" 
+            rel="noopener noreferer" href="${url + fileLink}">${f.locale}</a>`;
+    });
     return `<div>
         <b>Tiedostot:</b> ${html.join(' ')}
     </div>`;
