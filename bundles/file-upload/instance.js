@@ -140,9 +140,20 @@ function updateUI (layer, progress) {
       />
       <FileUploadPanel onSubmit={submitFiles} />
       <ProgressBar value={progress || 0} />
-      <FileListing files={layer.files || []} />
+      <FileListing files={layer.files || []} onDelete={removeFile} />
     </>,
     mainUI[0]);
+}
+
+function removeFile(layerId, fileId) {
+    var r = confirm("Haluatko poistaa tiedoston?");
+    if (r === true) {
+        FileService.removeFile(layerId, fileId, () => {
+            console.log(`Removed from ${layerId} file ${fileId}`);
+            // update file listing
+            showFlyout(layer.id);
+        });
+    }
 }
 
 function changeLayerAttr (value, callServer) {
@@ -173,6 +184,8 @@ function submitFiles (data, resetCB = () => {}) {
         () => {
             alert('Tiedostot lisätty');
             resetCB();
+            // update file listing
+            showFlyout(layer.id);
         },
         () => {
             updateUI(layer, 0);

@@ -56,10 +56,21 @@ function openFile (layerId, fileId) {
     window.open(url, '_blank');
 }
 
+function removeFile (layerId, fileId, successCB) {
+    var url = Oskari.urls.getRoute('WFSAttachments') +
+        `&layerId=${layerId}&fileId=${fileId}`;
+    jQuery.ajax({
+        url,
+        type: 'DELETE',
+        success: successCB
+    });
+}
+
 export const FileService = {
     uploadFiles,
     listLayersWithFiles,
     listFilesForLayer,
     listFilesForFeature,
-    openFile
+    openFile,
+    removeFile
 };
