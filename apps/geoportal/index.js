@@ -42,6 +42,9 @@ jQuery(document).ready(function () {
             appSetup.startupSequence.push({
                 bundlename: 'file-upload'
             });
+            appSetup.startupSequence.push({
+                bundlename: 'file-layerlist'
+            });
             app.init(appSetup);
             app.startApplication(function () {
                 var sb = Oskari.getSandbox();
