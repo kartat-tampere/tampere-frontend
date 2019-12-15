@@ -2,7 +2,7 @@ import 'oskari-loader!../../bundles/lang-overrides/bundle.js';
 
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapmodule/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapwmts/bundle.js';
-import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapwfs2/bundle.js';
+import 'oskari-loader!oskari-frontend/packages/mapping/ol/wfsvector/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/maparcgis/bundle.js';
 //import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapuserlayers/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/oskariui/bundle.js';

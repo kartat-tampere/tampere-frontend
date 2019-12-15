@@ -63,6 +63,10 @@ function addFileListing (gfiResultEvent) {
     // Nope, all good, not going to infinity and beyond!
     var { layerId, features, lonlat } = gfiResultEvent.getData();
     const featureId = getAttachmentFeatureId(layerId, features);
+    if (!featureId) {
+        // not found
+        return;
+    }
 
     FileService.listFilesForFeature(layerId, featureId, (files) => {
         if (!files.length) {
@@ -93,6 +97,9 @@ function getAttachmentFeatureId (layerId, features) {
     const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
     const featureMappingField = maplayer.getAttributes(KEY_ATTRIBUTES_ATTACHMENT) || 'id';
     const fieldIndex = maplayer.getFields().indexOf(featureMappingField);
+    if (featureProps.length <= fieldIndex) {
+        return;
+    }
     return featureProps[fieldIndex];
 }
 
@@ -145,8 +152,8 @@ function updateUI (layer, progress) {
     mainUI[0]);
 }
 
-function removeFile(layerId, fileId) {
-    var r = confirm("Haluatko poistaa tiedoston?");
+function removeFile (layerId, fileId) {
+    var r = confirm(`Haluatko poistaa tiedoston?`);
     if (r === true) {
         FileService.removeFile(layerId, fileId, () => {
             console.log(`Removed from ${layerId} file ${fileId}`);
