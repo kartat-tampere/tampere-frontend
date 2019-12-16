@@ -4,7 +4,7 @@ import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapmyplaces/bundle.js'
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/maparcgis/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapmodule/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/oskariui/bundle.js';
-import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapwfs2/bundle.js';
+import 'oskari-loader!oskari-frontend/packages/mapping/ol/wfsvector/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapuserlayers/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/ui-components/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/mapfull/bundle.js';
@@ -44,7 +44,7 @@ import 'oskari-lazy-loader?content-editor!oskari-frontend-contrib/packages/tampe
 
 import 'oskari-loader!../../bundles/file-upload/bundle.js';
 
-import 'oskari-loader!../../bundles/file-layerlist/bundle.js';
+import 'oskari-lazy-loader?file-layerlist!../../bundles/file-layerlist/bundle.js';
 
 // /tampereeeeee
 
