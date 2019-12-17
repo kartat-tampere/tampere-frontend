@@ -13,13 +13,6 @@ Oskari.clazz.defineES(
             super();
             this.__name = 'file-layerlist';
             this.eventHandlers = {
-                'MapLayerEvent': (event) => {
-                    const op = event.getOperation();
-                    if (op !== 'add') {
-                        return;
-                    }
-                    loadLayers();
-                },
                 'AfterMapLayerAddEvent': () => {
                     render(layers);
                 },
@@ -30,6 +23,7 @@ Oskari.clazz.defineES(
         }
         _startImpl () {
             render([]);
+            loadLayers();
         }
     }
 );
@@ -42,12 +36,21 @@ function loadLayers () {
 
     var service = Oskari.getSandbox().getService(
         'Oskari.mapframework.service.MapLayerService');
-    FileService.listLayersWithFiles(layersIds => {
-        layers = layersIds.map(id =>
-            service.findMapLayer(id)
+    FileService.listLayersWithFiles(layersJSON => {
+        // write to "global"
+        layers = layersJSON.map(json => {
+            var mapLayer = service.createMapLayer(json);
+            // unsupported maplayer type returns null so check for it
+            if (mapLayer) {
+                service.addLayer(mapLayer);
+                return mapLayer;
+            }
+        }
+        // filter out null layers (unsupported)
         ).filter(layer => !!layer);
+        // call render
         render(layers);
-    });
+    }, true);
 }
 
 function render (layers) {
