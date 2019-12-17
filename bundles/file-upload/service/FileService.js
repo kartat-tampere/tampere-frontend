@@ -33,8 +33,8 @@ function uploadFiles (layerId, files, progressCB = noopFunc, successCB = noopFun
     xhr.send(formData);
 }
 
-function listLayersWithFiles (successCB) {
-    var url = Oskari.urls.getRoute('WFSAttachments');
+function listLayersWithFiles (successCB, layerJSON = false) {
+    var url = Oskari.urls.getRoute('WFSAttachments', { json: layerJSON });
     jQuery.get(url, successCB);
 }
 
