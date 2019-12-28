@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 // From file-upload bundle
 import { FileService } from '../file-upload/service/FileService';
+import { LayerHelper } from '../file-upload/service/LayerHelper';
 import { MainPanel } from './components/MainPanel';
 let layers = null;
 
@@ -18,6 +19,9 @@ Oskari.clazz.defineES(
                 },
                 'AfterMapLayerRemoveEvent': () => {
                     render(layers);
+                },
+                'GetInfoResultEvent': (event) => {
+                    addFileListing(event);
                 }
             };
         }
@@ -67,4 +71,44 @@ function getRoot () {
         mapEl.appendChild(root);
     }
     return root;
+}
+
+let eventDetection = [];
+
+function addFileListing (gfiResultEvent) {
+    // Hacky way of detecting if we sent this...
+    var filtered = eventDetection.filter(e => e !== gfiResultEvent);
+    if (filtered.length !== eventDetection.length) {
+        // remove from detection
+        eventDetection = filtered;
+        // Don't react again
+        return;
+    }
+    // Nope, all good, not going to infinity and beyond!
+    var { layerId, features, lonlat } = gfiResultEvent.getData();
+    const featureId = LayerHelper.getAttachmentFeatureId(layerId, features);
+    if (!featureId) {
+        // not found
+        return;
+    }
+
+    FileService.listFilesForFeature(layerId, featureId, (files) => {
+        if (!files.length) {
+            // no attachments
+            return;
+        }
+        var infoEvent = Oskari.eventBuilder('GetInfoResultEvent')({
+            layerId,
+            features: [{
+                layerId,
+                presentationType: 'Hack to inject more HTML on GFI popup!',
+                content: FileService.getFileLinksForFeature(layerId, files)
+            }],
+            lonlat,
+            // just to force "WMS" style parsing
+            via: 'ajax'
+        });
+        eventDetection.push(infoEvent);
+        Oskari.getSandbox().notifyAll(infoEvent);
+    });
 }

@@ -1,4 +1,6 @@
 
+const KEY_ATTRIBUTES_ATTACHMENT = 'attachmentKey';
+
 /**
  * Adds the layer attachments tool for layer
  * @param  {String| Number} layerId layer to process
@@ -62,8 +64,24 @@ function getLayerService () {
         .getService('Oskari.mapframework.service.MapLayerService');
 }
 
+function getAttachmentFeatureId (layerId, features) {
+    if (features.length !== 1) {
+        return;
+    }
+    const featureProps = features[0];
+    const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
+    const featureMappingField = maplayer.getAttributes(KEY_ATTRIBUTES_ATTACHMENT) || 'id';
+    const fieldIndex = maplayer.getFields().indexOf(featureMappingField);
+    if (featureProps.length <= fieldIndex) {
+        return;
+    }
+    return featureProps[fieldIndex];
+}
+
 export const LayerHelper = {
     addLayerTool,
     setupLayerTools,
-    getLayerService
+    getLayerService,
+    getAttachmentFeatureId,
+    KEY_ATTRIBUTES_ATTACHMENT
 };

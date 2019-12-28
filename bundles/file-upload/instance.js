@@ -18,7 +18,6 @@ const mainUI = jQuery('<div></div>');
 flyout.setContent(mainUI);
 
 let layer = {};
-const KEY_ATTRIBUTES_ATTACHMENT = 'attachmentKey';
 
 Oskari.clazz.defineES(
     'Oskari.file-upload.BundleInstance',
@@ -62,7 +61,7 @@ function addFileListing (gfiResultEvent) {
     }
     // Nope, all good, not going to infinity and beyond!
     var { layerId, features, lonlat } = gfiResultEvent.getData();
-    const featureId = getAttachmentFeatureId(layerId, features);
+    const featureId = LayerHelper.getAttachmentFeatureId(layerId, features);
     if (!featureId) {
         // not found
         return;
@@ -78,7 +77,7 @@ function addFileListing (gfiResultEvent) {
             features: [{
                 layerId,
                 presentationType: 'Hack to inject more HTML on GFI popup!',
-                content: getFileLinksForFeature(layerId, files)
+                content: FileService.getFileLinksForFeature(layerId, files)
             }],
             lonlat,
             // just to force "WMS" style parsing
@@ -89,42 +88,12 @@ function addFileListing (gfiResultEvent) {
     });
 }
 
-function getAttachmentFeatureId (layerId, features) {
-    if (features.length !== 1) {
-        return;
-    }
-    const featureProps = features[0];
-    const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
-    const featureMappingField = maplayer.getAttributes(KEY_ATTRIBUTES_ATTACHMENT) || 'id';
-    const fieldIndex = maplayer.getFields().indexOf(featureMappingField);
-    if (featureProps.length <= fieldIndex) {
-        return;
-    }
-    return featureProps[fieldIndex];
-}
-
-function getFileLinksForFeature (layerId, files) {
-    var url = Oskari.urls.getRoute('WFSAttachments') + `&layerId=${layerId}`;
-    const html = files.map(f => {
-        let fileLink = `&fileId=${f.id}`;
-        if (f.external) {
-            const fileName = encodeURIComponent(f.locale) + '.' + f.fileExtension;
-            fileLink = `&featureId=${f.featureId}&name=${fileName}`;
-        }
-        return `<a class="button" target="_blank" 
-            rel="noopener noreferer" href="${url + fileLink}">${f.locale}</a>`;
-    });
-    return `<div>
-        <b>Tiedostot:</b> ${html.join(' ')}
-    </div>`;
-}
-
 function showFlyout (layerId) {
     const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
     layer = {
         id: maplayer.getId(),
         name: maplayer.getName(),
-        attr: maplayer.getAttributes(KEY_ATTRIBUTES_ATTACHMENT) || 'id'
+        attr: maplayer.getAttributes(LayerHelper.KEY_ATTRIBUTES_ATTACHMENT) || 'id'
     };
     FileService.listFilesForLayer(layer.id, function (files) {
         layer = {
@@ -168,8 +137,8 @@ function changeLayerAttr (value, callServer) {
     if (callServer) {
         const maplayer = LayerHelper.getLayerService().findMapLayer(layer.id);
         const attrib = maplayer.getAttributes();
-        const oldValue = attrib[KEY_ATTRIBUTES_ATTACHMENT];
-        attrib[KEY_ATTRIBUTES_ATTACHMENT] = value;
+        const oldValue = attrib[LayerHelper.KEY_ATTRIBUTES_ATTACHMENT];
+        attrib[LayerHelper.KEY_ATTRIBUTES_ATTACHMENT] = value;
         maplayer.setAttributes(attrib);
         var url = Oskari.urls.getRoute('WFSAttachmentsLayer') + `&layerId=${layer.id}&attachmentKey=${value}`;
         jQuery.ajax({

@@ -66,11 +66,28 @@ function removeFile (layerId, fileId, successCB) {
     });
 }
 
+function getFileLinksForFeature (layerId, files) {
+    var url = Oskari.urls.getRoute('WFSAttachments') + `&layerId=${layerId}`;
+    const html = files.map(f => {
+        let fileLink = `&fileId=${f.id}`;
+        if (f.external) {
+            const fileName = encodeURIComponent(f.locale) + '.' + f.fileExtension;
+            fileLink = `&featureId=${f.featureId}&name=${fileName}`;
+        }
+        return `<a class="button" target="_blank" 
+            rel="noopener noreferer" href="${url + fileLink}">${f.locale}</a>`;
+    });
+    return `<div>
+        <b>Tiedostot:</b> ${html.join(' ')}
+    </div>`;
+}
+
 export const FileService = {
     uploadFiles,
     listLayersWithFiles,
     listFilesForLayer,
     listFilesForFeature,
     openFile,
-    removeFile
+    removeFile,
+    getFileLinksForFeature
 };

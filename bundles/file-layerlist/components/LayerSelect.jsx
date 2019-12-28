@@ -3,8 +3,12 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const StyledRootEl = styled('div')`
-    margin: 10px;
+    margin: 5px;
+    padding: 10px;
     border: 1px solid black;
+    border-radius: 5px;
+    background: ${props => props.selected ? 'palevioletred' : 'white'};
+    color: ${props => props.selected ? 'white' : 'palevioletred'};
 `;
 
 function handleClick (layer, isSelected) {
@@ -17,8 +21,8 @@ function handleClick (layer, isSelected) {
 
 export const LayerSelect = ({ layer, isSelected = false }) => {
     return (
-        <StyledRootEl onClick={() => handleClick(layer, isSelected)}>
-            { layer.getName() } ({ '' + isSelected })
+        <StyledRootEl selected={isSelected} onClick={() => handleClick(layer, isSelected)}>
+            { layer.getName() }
         </StyledRootEl>
     );
 };
