@@ -18,6 +18,7 @@ export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
     const isSelected = (layer) => {
         return selectedLayers.some(l => l.getId() === layer.getId());
     };
+    const hasLayers = layers.length > 0;
     return (
         <React.Fragment>
             <StyledRootEl>
@@ -32,6 +33,10 @@ export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
                 onClose={() => setVisible(false)}
                 visible={visible}
             >
+                { !hasLayers &&
+                <b>Ei ladattavia aineistoja</b>
+                }
+
                 { layers.map(layer =>
                     <LayerSelect
                         key={layer.getId() + isSelected(layer)}
