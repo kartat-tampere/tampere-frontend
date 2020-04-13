@@ -17,7 +17,7 @@ function addLayerTool (layer, toolCB, suppressEvent) {
         layer = service.findMapLayer(layer);
     }
     if (!layer.isLayerOfType('wfs')) {
-        console.log(layer.getType());
+        // console.log(layer.getType());
         return;
     }
     // add feature data tool for layer

@@ -125,7 +125,7 @@ function removeFile (layerId, fileId) {
     var r = confirm(`Haluatko poistaa tiedoston?`);
     if (r === true) {
         FileService.removeFile(layerId, fileId, () => {
-            console.log(`Removed from ${layerId} file ${fileId}`);
+            // console.log(`Removed from ${layerId} file ${fileId}`);
             // update file listing
             showFlyout(layer.id);
         });
