@@ -7,8 +7,8 @@ const StyledRootEl = styled('div')`
     padding: 10px;
     border: 1px solid black;
     border-radius: 5px;
-    background: ${props => props.selected ? 'palevioletred' : 'white'};
-    color: ${props => props.selected ? 'white' : 'palevioletred'};
+    background: ${props => props.selected ? '#1890ff' : 'white'};
+    color: ${props => props.selected ? 'white' : '#1890ff'};
 `;
 
 function handleClick (layer, isSelected) {
