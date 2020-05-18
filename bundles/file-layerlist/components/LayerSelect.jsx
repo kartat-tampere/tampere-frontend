@@ -10,12 +10,18 @@ const StyledRootEl = styled('div')`
     background: ${props => props.selected ? '#1890ff' : 'white'};
     color: ${props => props.selected ? 'white' : '#1890ff'};
 `;
-
+// used for toggling layers
+let lastSelectedLayer;
 function handleClick (layer, isSelected) {
     if (isSelected) {
         Oskari.getSandbox().postRequestByName('RemoveMapLayerRequest', [layer.getId()]);
+        lastSelectedLayer = null;
     } else {
+        if (lastSelectedLayer) {
+            Oskari.getSandbox().postRequestByName('RemoveMapLayerRequest', [lastSelectedLayer]);
+        }
         Oskari.getSandbox().postRequestByName('AddMapLayerRequest', [layer.getId()]);
+        lastSelectedLayer = layer.getId();
     }
 }
 
