@@ -63,6 +63,10 @@ function getLayerService () {
     return Oskari.getSandbox()
         .getService('Oskari.mapframework.service.MapLayerService');
 }
+function getAttachmentIdFieldName (layerId) {
+    const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
+    return maplayer.getAttributes(KEY_ATTRIBUTES_ATTACHMENT) || 'id';
+}
 
 function getAttachmentFeatureId (layerId, features) {
     if (features.length !== 1) {
@@ -70,7 +74,7 @@ function getAttachmentFeatureId (layerId, features) {
     }
     const featureProps = features[0];
     const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
-    const featureMappingField = maplayer.getAttributes(KEY_ATTRIBUTES_ATTACHMENT) || 'id';
+    const featureMappingField = getAttachmentIdFieldName(layerId);
     const fieldIndex = maplayer.getFields().indexOf(featureMappingField);
     if (featureProps.length <= fieldIndex) {
         return;
@@ -83,5 +87,6 @@ export const LayerHelper = {
     setupLayerTools,
     getLayerService,
     getAttachmentFeatureId,
+    getAttachmentIdFieldName,
     KEY_ATTRIBUTES_ATTACHMENT
 };
