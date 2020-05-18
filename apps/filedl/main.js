@@ -10,9 +10,7 @@ import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapwmts/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/wfsvector/bundle.js';
 
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/toolbar/bundle.js';
-import 'oskari-loader!oskari-frontend/packages/mapping/ol/infobox/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/drawtools/bundle.js';
-import 'oskari-loader!oskari-frontend/packages/mapping/ol/maprotator/bundle.js';
 
 import 'oskari-loader!../../bundles/file-layerlist/bundle.js';
 import './css/overwritten.css';
