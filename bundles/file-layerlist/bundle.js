@@ -3,8 +3,7 @@
  *
  * @class Oskari.file-layerlist.Bundle
  */
-Oskari.clazz.define(
-    'Oskari.file-layerlist.Bundle',
+Oskari.clazz.define('Oskari.file-layerlist.Bundle',
     function () {},
     {
         create: function () {
