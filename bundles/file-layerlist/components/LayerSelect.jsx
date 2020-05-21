@@ -5,10 +5,10 @@ import styled from 'styled-components';
 const StyledRootEl = styled('div')`
     margin: 5px;
     padding: 10px;
-    border: 1px solid black;
+    border: 1px solid ${props => props.selected ? '#096DD9' : '#1890FF'};
     border-radius: 5px;
-    background: ${props => props.selected ? '#1890ff' : 'white'};
-    color: ${props => props.selected ? 'white' : '#1890ff'};
+    background: ${props => props.selected ? '#096DD9' : '#40A9FF'};
+    color: white;
 `;
 // used for toggling layers
 let lastSelectedLayer;
