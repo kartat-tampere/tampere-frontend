@@ -26,3 +26,8 @@ export const getLayers = (callback) => {
         callback(layers);
     }, true);
 };
+
+export const getLayerFromService = (id) => {
+    const service = Oskari.getSandbox().getService('Oskari.mapframework.service.MapLayerService');
+    return service.findMapLayer(id);
+};
