@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { MainPanel, FEATURE_SELECT_ID } from './components/MainPanel';
-// unsafe, but the event for filtering features is for some reason in featuredata2 even when the actual handling is in wfsvectorlayerplugin...
-import 'oskari-frontend/bundles/framework/featuredata2/event/WFSSetFilter';
 import { showPopup } from './components/Popup';
 import { Basket } from './basket';
 import { processFeatures } from './featureshelper';
 import { getLayers } from './layerHelper';
+import { getFeaturesInGeom } from './geomSelector';
 
 Basket.onChange(updateUI);
 
@@ -56,7 +55,26 @@ class FileLayerListBundle extends BasicBundle {
                     return;
                 }
                 Oskari.getSandbox().postRequestByName('DrawTools.StopDrawingRequest', [FEATURE_SELECT_ID, true, true]);
-                Oskari.getSandbox().notifyAll(Oskari.eventBuilder('WFSSetFilter')(event.getGeoJson()));
+                const selectedLayers = Oskari.getSandbox().getMap().getLayers().filter(l => l.isLayerOfType('WFS'));
+                if (!selectedLayers.length) {
+                    // No WFS-layers selected
+                    // TODO: don't allow draw if no layers selected...
+                    return;
+                }
+                const layerId = selectedLayers[0].getId();
+                const features = getFeaturesInGeom(event.getGeoJson().features[0].geometry, layerId);
+                const mapped = features.map(f => {
+                    const value = {
+                        ...f.getProperties(),
+                        _$layerId: layerId
+                    };
+                    delete value.geometry;
+                    return value;
+                });
+                processFeatures(mapped, (features) => {
+                    const featuresWithFiles = features.filter(feat => feat._$files && feat._$files.length);
+                    featuresWithFiles.forEach(feat => { Basket.add(feat); });
+                });
             }
         };
     }
