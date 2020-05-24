@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Basket } from '../basket';
 import styled from 'styled-components';
+import { Button } from 'antd';
+import { CloudDownloadOutlined, FileAddOutlined } from '@ant-design/icons';
 
 /**
  * Creates an object data presentation of feature with possible file links
@@ -35,15 +37,21 @@ function getFileLinksForFeature (layerId, files = [], addBasketLink, item) {
         // eslint-disable-next-line react/jsx-no-target-blank
         return (<FileLink key={fileLink} link={fileLink}>{f.locale}</FileLink>);
     });
+    
     if (addBasketLink && fileLinks.length) {
         fileLinks.push(<BasketLink key='basket' item={item} />);
     }
     return fileLinks;
 };
 
+const LinkButton = styled(Button)`
+    margin-right: 5px;
+`;
 const FileLink = ({ link, children }) => {
-    // eslint-disable-next-line react/jsx-no-target-blank
-    return (<a className="button" target="_blank" rel="noopener noreferer" href={link}>{children}</a>);
+    return (<LinkButton size={'small'} onClick={() => {
+        window.open(link, '_blank');
+        return false;
+    }}><CloudDownloadOutlined />{ children }</LinkButton>);
 };
 FileLink.propTypes = {
     link: PropTypes.string.isRequired,
@@ -51,12 +59,15 @@ FileLink.propTypes = {
 };
 
 const BasketLink = ({ item }) => {
-    // eslint-disable-next-line react/jsx-no-target-blank
-    return (<a className="button" onClick={() => {
+    return (<LinkButton size={'small'} onClick={() => {
         Basket.add(item);
         return false;
-    }}>Poimi koriin</a>);
+    }}>
+        <FileAddOutlined />
+        Poimi koriin
+    </LinkButton>);
 };
+
 BasketLink.propTypes = {
     item: PropTypes.any.isRequired
 };
@@ -82,6 +93,7 @@ Row.propTypes = {
     field: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired
 };
+
 const LinkArea = ({ children }) => (
     <tr>
         <td colSpan="2">{ children }</td>

@@ -6,6 +6,7 @@
     "Oskari"
   ],
   "dependencies": {
+    "@ant-design/icons": "^4.1.0",
     "oskari-frontend": "git+https://git@github.com/ZakarFin/oskari-frontend.git#tampere155",
     "oskari-frontend-contrib": "git+https://git@github.com/ZakarFin/oskari-frontend-contrib.git#tampere155"
   },
