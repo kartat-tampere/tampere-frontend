@@ -5,7 +5,8 @@ import 'antd/es/drawer/style/index.js';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { LayerSelect } from './LayerSelect';
-import { Basket, showMessage } from '../basket';
+import { BasketContent } from './BasketContent';
+import { Basket } from '../basket';
 
 const StyledRootEl = styled('div')`
     position: fixed;
@@ -18,25 +19,26 @@ const StyledRootEl = styled('div')`
 `;
 export const FEATURE_SELECT_ID = 'attachmentSelection';
 const startSelection = () => Oskari.getSandbox().postRequestByName('DrawTools.StartDrawingRequest', [FEATURE_SELECT_ID, 'Polygon']);
-const endSelection = () => Basket.list().forEach(showMessage);
 
 export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
-    const [visible, setVisible] = useState(false);
+    const [layerSelectVisible, showLayerSelect] = useState(false);
+    const [basketVisible, showBasket] = useState(false);
     const isSelected = (layer) => {
         return selectedLayers.some(l => l.getId() === layer.getId());
     };
     const hasLayers = layers.length > 0;
+    const hasSelections = Basket.list().length > 0;
     return (
         <React.Fragment>
             <StyledRootEl>
-                <Button type="primary" onClick={() => setVisible(!visible)}>
+                <Button type="primary" onClick={() => showLayerSelect(!layerSelectVisible)}>
                     Valitse aineisto
                 </Button>
                 <Button onClick={startSelection}>
                     Massavalinta
                 </Button>
                 <Badge count={Basket.list().length}>
-                    <Button onClick={endSelection}>
+                    <Button onClick={() => showBasket(!basketVisible)} disabled={!hasSelections}>
                         Ostoskori
                     </Button>
                 </Badge>
@@ -45,8 +47,8 @@ export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
                 title="Ladattavat aineistot"
                 placement={'left'}
                 closable={true}
-                onClose={() => setVisible(false)}
-                visible={visible}
+                onClose={() => showLayerSelect(false)}
+                visible={layerSelectVisible}
             >
                 { !hasLayers &&
                 <b>Ei ladattavia aineistoja</b>
@@ -57,6 +59,15 @@ export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
                         key={layer.getId() + isSelected(layer)}
                         layer={layer}
                         isSelected={isSelected(layer)} />) }
+            </Drawer>
+            <Drawer
+                title="Valitut kohteet"
+                placement={'right'}
+                closable={true}
+                onClose={() => showBasket(false)}
+                // width='50%'
+                visible={basketVisible} >
+                <BasketContent contents={Basket.list()} onRemove={(item) => Basket.remove(item) }/>
             </Drawer>
         </React.Fragment>
     );
