@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Messaging } from 'oskari-ui/util';
 import { MainPanel, FEATURE_SELECT_ID } from './components/MainPanel';
-import { showPopup } from './components/Popup';
+import { showPopup, hidePopup } from './components/Popup';
 import { Basket } from './basket';
 import { processFeatures } from './helpers/featureshelper';
 import { getLayers, getLayerFromService } from './helpers/layerHelper';
@@ -58,7 +58,7 @@ class FileLayerListBundle extends BasicBundle {
                     if (featuresWithFiles.length) {
                         Messaging.success('Valitut kohteet lisätty koriin');
                     } else {
-                        Messaging.warn('Valintaan ei osunut yhtään kohdetta jolla olisi ladattavia tietoja');
+                        Messaging.warn('Valintaan ei osunut yhtään tiedostoja sisältävää kohdetta');
                     }
                 });
             }
@@ -80,6 +80,12 @@ function getSelectedWFSLayerId () {
 }
 function highlightFeatures () {
     const features = Basket.list();
+    const WFSLayerService = Oskari.getSandbox().getService('Oskari.mapframework.bundle.mapwfs2.service.WFSLayerService');
+    try {
+        WFSLayerService.emptyAllWFSFeatureSelections();
+    } catch (ignored) {
+        // this crashes if something was removed from basket after layer was removed from map
+    }
     if (!features.length) {
         return;
     }
@@ -88,9 +94,8 @@ function highlightFeatures () {
         return;
     }
     const featureIds = features.map(f => f._oid);
-    // WHY ON EARTH THIS. FIXME: IN MAPWFS2 and FEATUREDATA2!!
-    const WFSLayerService = Oskari.getSandbox().getService('Oskari.mapframework.bundle.mapwfs2.service.WFSLayerService');
-    WFSLayerService.emptyWFSFeatureSelections(layer);
+    // service needs to be called in addition to sending event
+    // FIXME: IN MAPWFS2 and FEATUREDATA2!!
     WFSLayerService.setWFSFeaturesSelections(layer.getId(), featureIds);
     // TODO: group by layer etc
     var event = Oskari.eventBuilder('WFSFeaturesSelectedEvent')(featureIds, layer);
@@ -99,8 +104,11 @@ function highlightFeatures () {
 
 function updateUI () {
     getLayers((layers) => {
-        const selectedLayers = Oskari.getSandbox().getMap().getLayers();
+        // hide any possibly open popups on map before re-render (in case layer was removed etc)
+        hidePopup();
+        // update highlighted features based on basket content
         highlightFeatures();
+        const selectedLayers = Oskari.getSandbox().getMap().getLayers();
         ReactDOM.render(
             <MainPanel layers={layers} selectedLayers={selectedLayers} />, getRoot());
     });

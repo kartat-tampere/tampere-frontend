@@ -27,19 +27,20 @@ export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
         return selectedLayers.some(l => l.getId() === layer.getId());
     };
     const hasLayers = layers.length > 0;
+    const fileLayerSelected = layers.some(isSelected);
     const hasSelections = Basket.list().length > 0;
     return (
         <React.Fragment>
             <StyledRootEl>
                 <Button type="primary" onClick={() => showLayerSelect(!layerSelectVisible)}>
-                    Valitse aineisto
+                    Aineistot
                 </Button>
-                <Button onClick={startSelection}>
-                    Massavalinta
+                <Button onClick={startSelection} disabled={!fileLayerSelected}>
+                    Valitse piirtämällä
                 </Button>
                 <Badge count={Basket.list().length}>
                     <Button onClick={() => showBasket(!basketVisible)} disabled={!hasSelections}>
-                        Ostoskori
+                        Tiedostot
                     </Button>
                 </Badge>
             </StyledRootEl>
@@ -67,7 +68,9 @@ export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
                 onClose={() => showBasket(false)}
                 // width='50%'
                 visible={basketVisible} >
-                <BasketContent contents={Basket.list()} onRemove={(item) => Basket.remove(item) }/>
+                <BasketContent
+                    contents={Basket.list()}
+                    onRemove={(item) => Basket.remove(item) }/>
             </Drawer>
         </React.Fragment>
     );

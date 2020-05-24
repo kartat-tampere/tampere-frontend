@@ -13,6 +13,7 @@ export const hidePopup = () => {
     return false;
 };
 
+// hacky way to force popup rendered with React on OpenLayers map
 const addMapOverlay = () => {
     const wrapper = document.createElement('div');
     document.body.appendChild(wrapper);

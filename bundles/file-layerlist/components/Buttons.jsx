@@ -45,12 +45,15 @@ export const getFileLinksForFeature = (layerId, files = [], addBasketLink, item)
             const fileName = encodeURIComponent(f.locale) + '.' + f.fileExtension;
             fileLink = `&featureId=${f.featureId}&name=${fileName}`;
         }
-        // eslint-disable-next-line react/jsx-no-target-blank
         return (<FileLink key={fileLink} link={fileLink}>{f.locale}</FileLink>);
     });
 
-    if (addBasketLink && fileLinks.length) {
-        fileLinks.push(<BasketLink key='basket' item={item} />);
+    if (addBasketLink) {
+        if (fileLinks.length) {
+            fileLinks.push(<BasketLink key='basket' item={item} />);
+        } else {
+            fileLinks.push(<span>Kohteella ei ole ladattavia tiedostoja.</span>);
+        }
     }
     return fileLinks;
 };
