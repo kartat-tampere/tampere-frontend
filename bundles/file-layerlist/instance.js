@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import { MainPanel, FEATURE_SELECT_ID } from './components/MainPanel';
 import { showPopup } from './components/Popup';
 import { Basket } from './basket';
-import { processFeatures } from './featureshelper';
-import { getLayers, getLayerFromService } from './layerHelper';
-import { getFeaturesInGeom } from './geomSelector';
+import { processFeatures } from './helpers/featureshelper';
+import { getLayers, getLayerFromService } from './helpers/layerHelper';
+import { getFeaturesInGeom } from './helpers/geomSelector';
 
 Basket.onChange(updateUI);
 

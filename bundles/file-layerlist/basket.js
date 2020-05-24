@@ -1,6 +1,6 @@
 import React from 'react';
 import { Messaging } from 'oskari-ui/util';
-import { getFeatureElement } from './featureshelper';
+import { ObjectData } from './components/ObjectData';
 
 const getFileId = (file) => {
     return file._$layerId + '||' + (file._oid || file.__fid);
@@ -8,7 +8,7 @@ const getFileId = (file) => {
 export const showMessage = (file) => {
     Messaging.open({
         title: 'Ladattava kohde',
-        content: (<table><tbody>{getFeatureElement(file)}</tbody></table>)
+        content: (<ObjectData item={file} />)
     });
 };
 
