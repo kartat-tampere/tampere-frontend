@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Messaging } from 'oskari-ui/util';
 import { MainPanel, FEATURE_SELECT_ID } from './components/MainPanel';
 import { showPopup } from './components/Popup';
 import { Basket } from './basket';
@@ -54,6 +55,11 @@ class FileLayerListBundle extends BasicBundle {
                 processFeatures(mapped, (features) => {
                     const featuresWithFiles = features.filter(feat => feat._$files && feat._$files.length);
                     featuresWithFiles.forEach(feat => { Basket.add(feat); });
+                    if (featuresWithFiles.length) {
+                        Messaging.success('Valitut kohteet lisätty koriin');
+                    } else {
+                        Messaging.warn('Valintaan ei osunut yhtään kohdetta jolla olisi ladattavia tietoja');
+                    }
                 });
             }
         };

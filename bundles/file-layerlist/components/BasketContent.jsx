@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Button } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import { LayerHelper } from '../../file-upload/service/LayerHelper';
 import { getLayerFromService } from '../helpers/layerHelper';
+import { getFileLinksForFeature } from './Buttons';
 
 export const BasketContent = ({ contents = [], onRemove }) => {
     const layers = groupByLayer(contents);
@@ -25,12 +25,12 @@ const IconContainer = styled('div')`
 const RemoveIcon = ({ item, onRemove }) => {
     return (<IconContainer><DeleteTwoTone twoToneColor="#FF0000" onClick={() => onRemove(item)}/></IconContainer>);
 };
-const Feature = ({ item, idField, onRemove }) => {
+const Feature = ({ item, layer, onRemove }) => {
+    const idField = layer.idField;
     return (<li>
         <b>{item[idField]}</b><RemoveIcon item={item} onRemove={onRemove} />
         <br />
-        <Button>Link 1</Button>
-        <Button>Link 2</Button>
+        {getFileLinksForFeature(layer.id, item._$files)}
     </li>);
 };
 
@@ -41,7 +41,7 @@ const LayerItems = ({ layer, onRemove }) => {
             <div>{ layer.idField }</div>
             <ul>
                 { layer.features.map(item => (
-                    <Feature key={item[layer.idField]} item={item} idField={layer.idField} onRemove={onRemove} />
+                    <Feature key={item[layer.idField]} item={item} layer={layer} onRemove={onRemove} />
                 )) }
             </ul>
         </React.Fragment>
@@ -61,6 +61,7 @@ const groupByLayer = (contents) => {
             const attachmentFieldName = LayerHelper.getAttachmentIdFieldName(layer);
             const layerItem = getLayerFromService(layer);
             value[layer] = {
+                id: layer,
                 idField: attachmentFieldName,
                 name: layerItem.getName(),
                 features: []
