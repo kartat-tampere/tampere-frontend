@@ -11,10 +11,10 @@ const LinkButton = styled(Button)`
 
 export const FileLink = ({ link, children }) => {
     return (<LinkButton size={'small'} onClick={() => {
-            window.open(link, '_blank');
-            return false;
-        }}>
-            <CloudDownloadOutlined />{ children }
+        window.open(link, '_blank');
+        return false;
+    }}>
+        <CloudDownloadOutlined />{ children }
     </LinkButton>);
 };
 FileLink.propTypes = {

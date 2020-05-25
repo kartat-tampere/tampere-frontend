@@ -14,24 +14,9 @@ export const BasketContent = ({ contents = [], onRemove }) => {
         </React.Fragment>
     );
 };
-
 BasketContent.propTypes = {
     contents: PropTypes.any,
     onRemove: PropTypes.func.isRequired
-};
-const IconContainer = styled('div')`
-    float: right;
-`;
-const RemoveIcon = ({ item, onRemove }) => {
-    return (<IconContainer><DeleteTwoTone twoToneColor="#FF0000" onClick={() => onRemove(item)}/></IconContainer>);
-};
-const Feature = ({ item, layer, onRemove }) => {
-    const idField = layer.idField;
-    return (<li>
-        <b>{item[idField]}</b><RemoveIcon item={item} onRemove={onRemove} />
-        <br />
-        {getFileLinksForFeature(layer.id, item._$files)}
-    </li>);
 };
 
 const LayerItems = ({ layer, onRemove }) => {
@@ -49,6 +34,31 @@ const LayerItems = ({ layer, onRemove }) => {
 };
 LayerItems.propTypes = {
     layer: PropTypes.any.isRequired,
+    onRemove: PropTypes.func.isRequired
+};
+
+const Feature = ({ item, layer, onRemove }) => {
+    const idField = layer.idField;
+    return (<li>
+        <b>{item[idField]}</b><RemoveIcon item={item} onRemove={onRemove} />
+        <br />
+        {getFileLinksForFeature(layer.id, item._$files)}
+    </li>);
+};
+Feature.propTypes = {
+    item: PropTypes.any.isRequired,
+    layer: PropTypes.any.isRequired,
+    onRemove: PropTypes.func.isRequired
+};
+
+const IconContainer = styled('div')`
+    float: right;
+`;
+const RemoveIcon = ({ item, onRemove }) => {
+    return (<IconContainer><DeleteTwoTone twoToneColor="#FF0000" onClick={() => onRemove(item)}/></IconContainer>);
+};
+RemoveIcon.propTypes = {
+    item: PropTypes.any.isRequired,
     onRemove: PropTypes.func.isRequired
 };
 
