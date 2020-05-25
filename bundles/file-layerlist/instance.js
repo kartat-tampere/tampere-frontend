@@ -30,9 +30,6 @@ class FileLayerListBundle extends BasicBundle {
                     });
                 }
             },
-            'WFSFeaturesSelectedEvent': (event) => {
-                // TODO: listen to event for removing stuff from basket?
-            },
             'DrawingEvent': (event) => {
                 if (!event.getIsFinished() || event.getId() !== FEATURE_SELECT_ID) {
                     // only interested in finished drawings for attachment selection
@@ -79,21 +76,23 @@ function getSelectedWFSLayerId () {
     return selectedLayers[0].getId();
 }
 function highlightFeatures () {
-    const features = Basket.list();
     const WFSLayerService = Oskari.getSandbox().getService('Oskari.mapframework.bundle.mapwfs2.service.WFSLayerService');
     try {
         WFSLayerService.emptyAllWFSFeatureSelections();
     } catch (ignored) {
         // this crashes if something was removed from basket after layer was removed from map
     }
+    const features = Basket.list();
     if (!features.length) {
         return;
     }
-    const layer = getLayerFromService(features[0]._$layerId);
+    const layer = getLayerFromService(getSelectedWFSLayerId());
     if (!layer) {
         return;
     }
-    const featureIds = features.map(f => f._oid);
+    const featureIds = features
+        .filter(f => f._$layerId === layer)
+        .map(f => f._oid);
     // service needs to be called in addition to sending event
     // FIXME: IN MAPWFS2 and FEATUREDATA2!!
     WFSLayerService.setWFSFeaturesSelections(layer.getId(), featureIds);
