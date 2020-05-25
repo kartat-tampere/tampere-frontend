@@ -28,5 +28,12 @@ export const Basket = {
         delete selectedFiles[getFileId(file)];
         notify();
     },
+    clear: () => {
+        const keys = Object.keys(selectedFiles);
+        keys.forEach(key => {
+            delete selectedFiles[key];
+        });
+        notify();
+    },
     onChange: (listener) => listeners.push(listener)
 };
