@@ -91,7 +91,7 @@ function highlightFeatures () {
         return;
     }
     const featureIds = features
-        .filter(f => f._$layerId === layer)
+        .filter(f => f._$layerId === layer.getId())
         .map(f => f._oid);
     // service needs to be called in addition to sending event
     // FIXME: IN MAPWFS2 and FEATUREDATA2!!
