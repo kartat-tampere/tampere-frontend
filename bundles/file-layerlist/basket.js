@@ -28,11 +28,13 @@ export const Basket = {
         delete selectedFiles[getFileId(file)];
         notify();
     },
-    clear: () => {
+    clear: (layer) => {
         const keys = Object.keys(selectedFiles);
-        keys.forEach(key => {
-            delete selectedFiles[key];
-        });
+        keys
+            .filter(key => !layer || key.startsWith(layer + '||'))
+            .forEach(key => {
+                delete selectedFiles[key];
+            });
         notify();
     },
     onChange: (listener) => listeners.push(listener)
