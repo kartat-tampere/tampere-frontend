@@ -10,7 +10,7 @@ const LinkButton = styled(Button)`
 `;
 
 export const FileLink = ({ link, children }) => {
-    return (<LinkButton size={'small'} onClick={() => {
+    return (<LinkButton size="small" onClick={() => {
         window.open(link, '_blank');
         return false;
     }}>
@@ -23,7 +23,7 @@ FileLink.propTypes = {
 };
 
 export const BasketLink = ({ item }) => {
-    return (<LinkButton size={'small'} onClick={() => {
+    return (<LinkButton size="small" onClick={() => {
         Basket.add(item);
         return false;
     }}>
