@@ -71,6 +71,9 @@ export const MainPanel = ({ layers = [], selectedLayers = [], drawControl, isDra
                 closable={true}
                 onClose={() => showBasket(false)}
                 width={350}
+                bodyStyle={{
+                    'padding-top': 0
+                }}
                 visible={basketVisible} >
                 <BasketContent
                     contents={Basket.list()}

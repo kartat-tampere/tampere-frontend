@@ -25,12 +25,12 @@ BasketContent.propTypes = {
 const LayerItems = ({ layer, onRemove }) => {
     return (
         <React.Fragment>
-            <h4>
+            <LayerName>
                 { layer.name }
                 { layer.features.length > 1 &&
                     <RemoveLayerSelections layerId={layer.id} />
                 }
-            </h4>
+            </LayerName>
             <ul>
                 { layer.features.map(item => (
                     <Feature key={item[layer.idField]} item={item} layer={layer} onRemove={onRemove} />
@@ -43,11 +43,17 @@ LayerItems.propTypes = {
     layer: PropTypes.any.isRequired,
     onRemove: PropTypes.func.isRequired
 };
+const LayerName = styled('h4')`
+    padding-top: 20px;
+    padding-bottom: 5px;
+`;
 
 const RemoveLayerSelections = ({ layerId }) => (
-    <Tooltip title={<Message messageKey='buttons.removeLayerFromBasket' />} placement="left">
-        <span><RemoveFromLayerIcon layer={layerId} /></span>
-    </Tooltip>);
+    <IconContainer>
+        <Tooltip title={<Message messageKey='buttons.removeLayerFromBasket' />} placement="left">
+            <span><RemoveFromLayerIcon layer={layerId} /></span>
+        </Tooltip>
+    </IconContainer>);
 RemoveLayerSelections.propTypes = {
     layerId: PropTypes.any.isRequired
 };
@@ -56,7 +62,8 @@ const Feature = ({ item, layer, onRemove }) => {
     const idField = layer.idField;
     return (<StyledItem>
         <b><Tooltip title={idField}>{item[idField]}</Tooltip></b>
-        <RemoveIcon item={item} onRemove={onRemove} /><br/>
+        <RemoveIcon item={item} onRemove={onRemove} />
+        <br/>
         {getFileLinksForFeature(layer.id, item._$files)}
     </StyledItem>);
 };
@@ -69,6 +76,7 @@ const StyledItem = styled('li')`
     list-style-type: none;
     border: 1px dashed rgb(200, 200, 200, 0.3);
     padding: 5px;
+    margin-bottom: 5px;
 `;
 
 export const RemoveAllIcon = () => {
