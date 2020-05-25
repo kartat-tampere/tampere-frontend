@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Messaging } from 'oskari-ui/util';
-import { MainPanel, FEATURE_SELECT_ID } from './components/MainPanel';
+import { Messaging, LocaleProvider } from 'oskari-ui/util';
+import { MainPanel } from './components/MainPanel';
 import { showPopup, hidePopup } from './components/Popup';
 import { Basket } from './basket';
 import { processFeatures } from './helpers/featureshelper';
@@ -12,10 +12,27 @@ Basket.onChange(updateUI);
 
 const BasicBundle = Oskari.clazz.get('Oskari.BasicBundle');
 
+const FEATURE_SELECT_ID = 'attachmentSelection';
+let isDrawing = false;
+const startDrawSelection = () => {
+    Oskari.getSandbox().postRequestByName('DrawTools.StartDrawingRequest', [FEATURE_SELECT_ID, 'Polygon']);
+    isDrawing = true;
+    updateUI();
+};
+const endDrawSelection = () => {
+    Oskari.getSandbox().postRequestByName('DrawTools.StopDrawingRequest', [FEATURE_SELECT_ID, true, true]);
+    isDrawing = false;
+    updateUI();
+};
+const toggleDrawing = () => {
+    isDrawing ? endDrawSelection() : startDrawSelection();
+};
+
 class FileLayerListBundle extends BasicBundle {
     constructor () {
         super();
         this.__name = 'file-layerlist';
+        this.loc = Oskari.getMsg.bind(null, this.__name);
         this.eventHandlers = {
             'AfterMapLayerAddEvent': () => {
                 updateUI();
@@ -35,7 +52,7 @@ class FileLayerListBundle extends BasicBundle {
                     // only interested in finished drawings for attachment selection
                     return;
                 }
-                Oskari.getSandbox().postRequestByName('DrawTools.StopDrawingRequest', [FEATURE_SELECT_ID, true, true]);
+                endDrawSelection();
                 const layerId = getSelectedWFSLayerId();
                 if (!layerId) {
                     return;
@@ -53,9 +70,9 @@ class FileLayerListBundle extends BasicBundle {
                     const featuresWithFiles = features.filter(feat => feat._$files && feat._$files.length);
                     featuresWithFiles.forEach(feat => { Basket.add(feat); });
                     if (featuresWithFiles.length) {
-                        Messaging.success('Valitut kohteet lisätty koriin');
+                        Messaging.success(this.loc('addedToBasket'));
                     } else {
-                        Messaging.warn('Valintaan ei osunut yhtään tiedostoja sisältävää kohdetta');
+                        Messaging.warn(this.loc('drawNoHits'));
                     }
                 });
             }
@@ -109,7 +126,9 @@ function updateUI () {
         highlightFeatures();
         const selectedLayers = Oskari.getSandbox().getMap().getLayers();
         ReactDOM.render(
-            <MainPanel layers={layers} selectedLayers={selectedLayers} />, getRoot());
+            <LocaleProvider value={{ bundleKey: 'file-layerlist' }}>
+                <MainPanel layers={layers} selectedLayers={selectedLayers} drawControl={toggleDrawing} isDrawing={isDrawing}/>
+            </LocaleProvider>, getRoot());
     });
 }
 

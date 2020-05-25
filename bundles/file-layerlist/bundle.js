@@ -20,13 +20,12 @@ Oskari.clazz.define('Oskari.file-layerlist.Bundle',
                     src: './instance.js'
                 }
             ],
-            locales: [/*
+            locales: [
                 {
                     lang: 'fi',
                     type: 'text/javascript',
                     src: './resources/locale/fi.js'
                 }
-                */
             ]
         }
     }

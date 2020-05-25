@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Basket } from '../basket';
 import styled from 'styled-components';
 import { Button } from 'antd';
+import { Message } from 'oskari-ui';
 import { CloudDownloadOutlined, FileAddTwoTone } from '@ant-design/icons';
 
 const LinkButton = styled(Button)`
@@ -52,7 +53,7 @@ export const getFileLinksForFeature = (layerId, files = [], addBasketLink, item)
         if (fileLinks.length) {
             fileLinks.push(<BasketLink key='basket' item={item} />);
         } else {
-            fileLinks.push(<span>Kohteella ei ole ladattavia tiedostoja.</span>);
+            fileLinks.push(<Message messageKey='noFilesOnFeature' />);
         }
     }
     return fileLinks;

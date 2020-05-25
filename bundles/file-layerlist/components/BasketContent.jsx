@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Tooltip } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
+import { Message } from 'oskari-ui';
 import { LayerHelper } from '../../file-upload/service/LayerHelper';
 import { getLayerFromService } from '../helpers/layerHelper';
 import { getFileLinksForFeature } from './Buttons';
@@ -44,7 +45,7 @@ LayerItems.propTypes = {
 };
 
 const RemoveLayerSelections = ({ layerId }) => (
-    <Tooltip title="Poista tason valinnat" placement="left">
+    <Tooltip title={<Message messageKey='buttons.removeLayerFromBasket' />} placement="left">
         <span><RemoveFromLayerIcon layer={layerId} /></span>
     </Tooltip>);
 RemoveLayerSelections.propTypes = {
