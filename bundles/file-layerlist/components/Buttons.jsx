@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Basket } from '../basket';
 import styled from 'styled-components';
 import { Button } from 'antd';
-import { CloudDownloadOutlined, FileAddOutlined } from '@ant-design/icons';
+import { CloudDownloadOutlined, FileAddTwoTone } from '@ant-design/icons';
 
 const LinkButton = styled(Button)`
     margin-right: 5px;
@@ -14,7 +14,7 @@ export const FileLink = ({ link, children }) => {
         window.open(link, '_blank');
         return false;
     }}>
-        <CloudDownloadOutlined />{ children }
+        <CloudDownloadOutlined style={{ color: '#096DD9' }} />{ children }
     </LinkButton>);
 };
 FileLink.propTypes = {
@@ -27,7 +27,7 @@ export const BasketLink = ({ item }) => {
         Basket.add(item);
         return false;
     }}>
-        <FileAddOutlined />
+        <FileAddTwoTone twoToneColor="#00BB00" />
         Poimi koriin
     </LinkButton>);
 };

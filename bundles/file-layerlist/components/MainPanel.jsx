@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Drawer, Button, Badge } from 'antd';
+import { Drawer, Button, Badge, Tooltip } from 'antd';
 import 'antd/es/button/style/index.js';
 import 'antd/es/drawer/style/index.js';
+import 'antd/es/tooltip/style/index.js';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { LayerSelect } from './LayerSelect';
-import { BasketContent } from './BasketContent';
+import { BasketContent, RemoveAllIcon } from './BasketContent';
 import { Basket } from '../basket';
 
 const StyledRootEl = styled('div')`
@@ -29,6 +30,10 @@ export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
     const hasLayers = layers.length > 0;
     const fileLayerSelected = layers.some(isSelected);
     const hasSelections = Basket.list().length > 0;
+    if (basketVisible && !hasSelections) {
+        // in case remove all was clicked on basket
+        showBasket(false);
+    }
     return (
         <React.Fragment>
             <StyledRootEl>
@@ -62,11 +67,11 @@ export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
                         isSelected={isSelected(layer)} />) }
             </Drawer>
             <Drawer
-                title="Valitut kohteet"
+                title={<BasketTitle />}
                 placement={'right'}
                 closable={true}
                 onClose={() => showBasket(false)}
-                // width='50%'
+                width={350}
                 visible={basketVisible} >
                 <BasketContent
                     contents={Basket.list()}
@@ -75,6 +80,12 @@ export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
         </React.Fragment>
     );
 };
+
+const BasketTitle = () => (
+    <React.Fragment>
+        Valitut kohteet <Tooltip placement="bottom" title="Poista kaikki"><span><RemoveAllIcon /></span></Tooltip>
+    </React.Fragment>
+);
 
 MainPanel.propTypes = {
     layers: PropTypes.any,

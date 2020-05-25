@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Tooltip } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import { LayerHelper } from '../../file-upload/service/LayerHelper';
 import { getLayerFromService } from '../helpers/layerHelper';
 import { getFileLinksForFeature } from './Buttons';
+import { Basket } from '../basket';
 
 export const BasketContent = ({ contents = [], onRemove }) => {
     const layers = groupByLayer(contents);
@@ -22,8 +24,12 @@ BasketContent.propTypes = {
 const LayerItems = ({ layer, onRemove }) => {
     return (
         <React.Fragment>
-            <h4>{ layer.name }</h4>
-            <div>{ layer.idField }</div>
+            <h4>
+                { layer.name }
+                { layer.features.length > 1 &&
+                    <RemoveLayerSelections layerId={layer.id} />
+                }
+            </h4>
             <ul>
                 { layer.features.map(item => (
                     <Feature key={item[layer.idField]} item={item} layer={layer} onRemove={onRemove} />
@@ -37,20 +43,42 @@ LayerItems.propTypes = {
     onRemove: PropTypes.func.isRequired
 };
 
+const RemoveLayerSelections = ({ layerId }) => (
+    <Tooltip title="Poista tason valinnat" placement="left">
+        <span><RemoveFromLayerIcon layer={layerId} /></span>
+    </Tooltip>);
+RemoveLayerSelections.propTypes = {
+    layerId: PropTypes.any.isRequired
+};
+
 const Feature = ({ item, layer, onRemove }) => {
     const idField = layer.idField;
-    return (<li>
-        <b>{item[idField]}</b><RemoveIcon item={item} onRemove={onRemove} />
-        <br />
+    return (<StyledItem>
+        <b><Tooltip title={idField}>{item[idField]}</Tooltip></b>
+        <RemoveIcon item={item} onRemove={onRemove} /><br/>
         {getFileLinksForFeature(layer.id, item._$files)}
-    </li>);
+    </StyledItem>);
 };
 Feature.propTypes = {
     item: PropTypes.any.isRequired,
     layer: PropTypes.any.isRequired,
     onRemove: PropTypes.func.isRequired
 };
+const StyledItem = styled('li')`
+    list-style-type: none;
+    border: 1px dashed rgb(200, 200, 200, 0.3);
+    padding: 5px;
+`;
 
+export const RemoveAllIcon = () => {
+    return (<DeleteTwoTone twoToneColor="#FF0000" onClick={() => Basket.clear()}/>);
+};
+const RemoveFromLayerIcon = ({ layer }) => {
+    return (<DeleteTwoTone twoToneColor="#FF0000" onClick={() => Basket.clear(layer)}/>);
+};
+RemoveFromLayerIcon.propTypes = {
+    layer: PropTypes.any.isRequired
+};
 const IconContainer = styled('div')`
     float: right;
 `;
