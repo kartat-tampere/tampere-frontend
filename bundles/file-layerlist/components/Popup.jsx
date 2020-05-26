@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Overlay from 'ol/Overlay';
+import { LocaleProvider } from 'oskari-ui/util';
 import './Popup.css';
 import { ObjectData } from './ObjectData';
 
@@ -39,7 +40,7 @@ export const showPopup = (x, y, content) => {
         addMapOverlay();
     }
     const el = document.getElementById('popup-content');
-    ReactDOM.render(<ObjectData item={content} addBasketLink={true} />, el);
+    ReactDOM.render(<LocaleProvider value={{ bundleKey: 'file-layerlist' }}><ObjectData item={content} addBasketLink={true} /></LocaleProvider>, el);
     overlay.setPosition([x, y]);
     const closeBtn = document.getElementById('popup-closer');
     if (!closeBtn.onclick) {
