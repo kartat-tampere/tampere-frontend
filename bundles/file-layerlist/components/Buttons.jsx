@@ -44,7 +44,7 @@ export const getFileLinksForFeature = (layerId, files = [], addBasketLink, item)
         let fileLink = `${url}&fileId=${f.id}`;
         if (f.external) {
             const fileName = encodeURIComponent(f.locale) + '.' + f.fileExtension;
-            fileLink = `&featureId=${f.featureId}&name=${fileName}`;
+            fileLink = `${url}&featureId=${f.featureId}&name=${fileName}`;
         }
         return (<FileLink key={fileLink} link={fileLink}>{f.locale}</FileLink>);
     });
