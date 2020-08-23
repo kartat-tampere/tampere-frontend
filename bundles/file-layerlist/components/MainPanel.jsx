@@ -61,7 +61,7 @@ export const MainPanel = ({ layers = [], selectedLayers = [], drawControl, isDra
 
                 { layers.map(layer =>
                     <LayerSelect
-                        key={layer.getId() + isSelected(layer)}
+                        key={layer.getId()}
                         layer={layer}
                         isSelected={isSelected(layer)} />) }
             </Drawer>
