@@ -1,14 +1,13 @@
 {
   "name": "oskari-frontend-tampere",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "kartat.tampere.fi/oskari bundles & app conf",
   "keywords": [
     "Oskari"
   ],
   "dependencies": {
-    "@ant-design/icons": "^4.1.0",
-    "oskari-frontend": "git+https://git@github.com/ZakarFin/oskari-frontend.git#tampere155",
-    "oskari-frontend-contrib": "git+https://git@github.com/ZakarFin/oskari-frontend-contrib.git#tampere155"
+    "oskari-frontend": "git+https://git@github.com/ZakarFin/oskari-frontend.git#tampere156-dev",
+    "oskari-frontend-contrib": "git+https://git@github.com/ZakarFin/oskari-frontend-contrib.git#tampere156-dev"
   },
   "scripts": {
     "dev-mode": "node ./node_modules/oskari-frontend/scripts/oskari-dev-mode",
