@@ -1,9 +1,7 @@
-import React from 'react';
 import GeoJSON from 'ol/format/GeoJSON';
 // From file-upload bundle
-import { LayerHelper } from '../file-upload/service/LayerHelper';
-import { FileService } from '../file-upload/service/FileService';
-import { Basket } from './basket';
+import { LayerHelper } from '../../file-upload/service/LayerHelper';
+import { FileService } from '../../file-upload/service/FileService';
 
 /**
  * Adds internal variables and injects files to features
@@ -61,44 +59,4 @@ function addFilesForFeature (feature, callback) {
         feature._$files = files;
         callback(feature);
     });
-};
-
-/**
- * Creates an object data presentation of feature with possible file links
- */
-const IGNORED_KEYS = ['_$layerId', '_oid', '__fid', '_$files', '_$coord'];
-export const getFeatureElement = (file, addBasketLink = false) => {
-    const shownKeys = Object.keys(file)
-        .filter(key => !IGNORED_KEYS.includes(key))
-        .map(key => (
-            <tr key={key}>
-                <td>{key}</td>
-                <td>{file[key]}</td>
-            </tr>));
-    // {"external":false,"layerId":2276,"fileExtension":"pdf","id":4,"locale":"TRE 1905198","featureId":"TRE 1905198"}
-    shownKeys.push((
-        <tr>
-            <td colSpan="2">{ getFileLinksForFeature(file._$layerId, file._$files, addBasketLink, file) }</td>
-        </tr>));
-    return (<table><tbody>{shownKeys}</tbody></table>);
-};
-
-function getFileLinksForFeature (layerId, files = [], addBasketLink, item) {
-    var url = Oskari.urls.getRoute('WFSAttachments') + `&layerId=${layerId}`;
-    const fileLinks = files.map(f => {
-        let fileLink = `${url}&fileId=${f.id}`;
-        if (f.external) {
-            const fileName = encodeURIComponent(f.locale) + '.' + f.fileExtension;
-            fileLink = `&featureId=${f.featureId}&name=${fileName}`;
-        }
-        // eslint-disable-next-line react/jsx-no-target-blank
-        return (<a key={fileLink} className="button" target="_blank" rel="noopener noreferer" href={fileLink}>{f.locale}</a>);
-    });
-    if (addBasketLink && fileLinks.length) {
-        fileLinks.push(<a key='basket' className="button" onClick={() => {
-            Basket.add(item);
-            return false;
-        }}>Poimi koriin</a>);
-    }
-    return fileLinks;
 };

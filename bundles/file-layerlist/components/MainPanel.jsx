@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Drawer, Button, Badge } from 'antd';
+import { Drawer, Button, Badge, Tooltip } from 'antd';
 import 'antd/es/button/style/index.js';
 import 'antd/es/drawer/style/index.js';
+import 'antd/es/tooltip/style/index.js';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Message } from 'oskari-ui';
 import { LayerSelect } from './LayerSelect';
-import { Basket, showMessage } from '../basket';
+import { BasketContent, RemoveAllIcon } from './BasketContent';
+import { Basket } from '../basket';
 
 const StyledRootEl = styled('div')`
     position: fixed;
@@ -16,53 +19,79 @@ const StyledRootEl = styled('div')`
         margin-right: 10px;
     }
 `;
-export const FEATURE_SELECT_ID = 'attachmentSelection';
-const startSelection = () => Oskari.getSandbox().postRequestByName('DrawTools.StartDrawingRequest', [FEATURE_SELECT_ID, 'Polygon']);
-const endSelection = () => Basket.list().forEach(showMessage);
 
-export const MainPanel = ({ layers = [], selectedLayers = [] }) => {
-    const [visible, setVisible] = useState(false);
+export const MainPanel = ({ layers = [], selectedLayers = [], drawControl, isDrawing }) => {
+    const [layerSelectVisible, showLayerSelect] = useState(false);
+    const [basketVisible, showBasket] = useState(false);
     const isSelected = (layer) => {
         return selectedLayers.some(l => l.getId() === layer.getId());
     };
     const hasLayers = layers.length > 0;
+    const fileLayerSelected = layers.some(isSelected);
+    const hasSelections = Basket.list().length > 0;
+    if (basketVisible && !hasSelections) {
+        // in case remove all was clicked on basket
+        showBasket(false);
+    }
     return (
         <React.Fragment>
             <StyledRootEl>
-                <Button type="primary" onClick={() => setVisible(!visible)}>
-                    Valitse aineisto
+                <Button type="primary" onClick={() => showLayerSelect(!layerSelectVisible)}>
+                    <Message messageKey='buttons.layerSelection' />
                 </Button>
-                <Button onClick={startSelection}>
-                    Massavalinta
+                <Button onClick={drawControl} disabled={!fileLayerSelected}>
+                    { isDrawing ? <Message messageKey='buttons.endDraw' /> : <Message messageKey='buttons.drawSelection' /> }
                 </Button>
                 <Badge count={Basket.list().length}>
-                    <Button onClick={endSelection}>
-                        Ostoskori
+                    <Button onClick={() => showBasket(!basketVisible)} disabled={!hasSelections}>
+                        <Message messageKey='buttons.basket' />
                     </Button>
                 </Badge>
             </StyledRootEl>
             <Drawer
-                title="Ladattavat aineistot"
+                title={<Message messageKey='layerSelection.title' />}
                 placement={'left'}
                 closable={true}
-                onClose={() => setVisible(false)}
-                visible={visible}
+                onClose={() => showLayerSelect(false)}
+                visible={layerSelectVisible}
             >
                 { !hasLayers &&
-                <b>Ei ladattavia aineistoja</b>
+                <b><Message messageKey='noLayersWithFiles' /></b>
                 }
 
                 { layers.map(layer =>
                     <LayerSelect
-                        key={layer.getId() + isSelected(layer)}
+                        key={layer.getId()}
                         layer={layer}
                         isSelected={isSelected(layer)} />) }
+            </Drawer>
+            <Drawer
+                title={<BasketTitle />}
+                placement={'right'}
+                closable={true}
+                onClose={() => showBasket(false)}
+                width={350}
+                bodyStyle={{
+                    'padding-top': 0
+                }}
+                visible={basketVisible} >
+                <BasketContent
+                    contents={Basket.list()}
+                    onRemove={(item) => Basket.remove(item) }/>
             </Drawer>
         </React.Fragment>
     );
 };
 
+const BasketTitle = () => (
+    <React.Fragment>
+        <Message messageKey='basket.title' /> <Tooltip placement="bottom" title={<Message messageKey='buttons.clearBasket' />}><span><RemoveAllIcon /></span></Tooltip>
+    </React.Fragment>
+);
+
 MainPanel.propTypes = {
     layers: PropTypes.any,
-    selectedLayers: PropTypes.any
+    selectedLayers: PropTypes.any,
+    drawControl: PropTypes.func.isRequired,
+    isDrawing: PropTypes.bool
 };

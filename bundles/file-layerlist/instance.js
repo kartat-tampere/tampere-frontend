@@ -1,20 +1,38 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { MainPanel, FEATURE_SELECT_ID } from './components/MainPanel';
-import { showPopup } from './components/Popup';
+import { Messaging, LocaleProvider } from 'oskari-ui/util';
+import { MainPanel } from './components/MainPanel';
+import { showPopup, hidePopup } from './components/Popup';
 import { Basket } from './basket';
-import { processFeatures } from './featureshelper';
-import { getLayers, getLayerFromService } from './layerHelper';
-import { getFeaturesInGeom } from './geomSelector';
+import { processFeatures } from './helpers/featureshelper';
+import { getLayers, getLayerFromService } from './helpers/layerHelper';
+import { getFeaturesInGeom } from './helpers/geomSelector';
 
 Basket.onChange(updateUI);
 
 const BasicBundle = Oskari.clazz.get('Oskari.BasicBundle');
 
+const FEATURE_SELECT_ID = 'attachmentSelection';
+let isDrawing = false;
+const startDrawSelection = () => {
+    Oskari.getSandbox().postRequestByName('DrawTools.StartDrawingRequest', [FEATURE_SELECT_ID, 'Polygon']);
+    isDrawing = true;
+    updateUI();
+};
+const endDrawSelection = () => {
+    Oskari.getSandbox().postRequestByName('DrawTools.StopDrawingRequest', [FEATURE_SELECT_ID, true, true]);
+    isDrawing = false;
+    updateUI();
+};
+const toggleDrawing = () => {
+    isDrawing ? endDrawSelection() : startDrawSelection();
+};
+
 class FileLayerListBundle extends BasicBundle {
     constructor () {
         super();
         this.__name = 'file-layerlist';
+        this.loc = Oskari.getMsg.bind(null, this.__name);
         this.eventHandlers = {
             'AfterMapLayerAddEvent': () => {
                 updateUI();
@@ -29,15 +47,12 @@ class FileLayerListBundle extends BasicBundle {
                     });
                 }
             },
-            'WFSFeaturesSelectedEvent': (event) => {
-                // TODO: listen to event for removing stuff from basket?
-            },
             'DrawingEvent': (event) => {
                 if (!event.getIsFinished() || event.getId() !== FEATURE_SELECT_ID) {
                     // only interested in finished drawings for attachment selection
                     return;
                 }
-                Oskari.getSandbox().postRequestByName('DrawTools.StopDrawingRequest', [FEATURE_SELECT_ID, true, true]);
+                endDrawSelection();
                 const layerId = getSelectedWFSLayerId();
                 if (!layerId) {
                     return;
@@ -54,6 +69,11 @@ class FileLayerListBundle extends BasicBundle {
                 processFeatures(mapped, (features) => {
                     const featuresWithFiles = features.filter(feat => feat._$files && feat._$files.length);
                     featuresWithFiles.forEach(feat => { Basket.add(feat); });
+                    if (featuresWithFiles.length) {
+                        Messaging.success(this.loc('addedToBasket'));
+                    } else {
+                        Messaging.warn(this.loc('drawNoHits'));
+                    }
                 });
             }
         };
@@ -73,18 +93,25 @@ function getSelectedWFSLayerId () {
     return selectedLayers[0].getId();
 }
 function highlightFeatures () {
+    const WFSLayerService = Oskari.getSandbox().getService('Oskari.mapframework.bundle.mapwfs2.service.WFSLayerService');
+    try {
+        WFSLayerService.emptyAllWFSFeatureSelections();
+    } catch (ignored) {
+        // this crashes if something was removed from basket after layer was removed from map
+    }
     const features = Basket.list();
     if (!features.length) {
         return;
     }
-    const layer = getLayerFromService(features[0]._$layerId);
+    const layer = getLayerFromService(getSelectedWFSLayerId());
     if (!layer) {
         return;
     }
-    const featureIds = features.map(f => f._oid);
-    // WHY ON EARTH THIS. FIXME: IN MAPWFS2 and FEATUREDATA2!!
-    const WFSLayerService = Oskari.getSandbox().getService('Oskari.mapframework.bundle.mapwfs2.service.WFSLayerService');
-    WFSLayerService.emptyWFSFeatureSelections(layer);
+    const featureIds = features
+        .filter(f => f._$layerId === layer.getId())
+        .map(f => f._oid);
+    // service needs to be called in addition to sending event
+    // FIXME: IN MAPWFS2 and FEATUREDATA2!!
     WFSLayerService.setWFSFeaturesSelections(layer.getId(), featureIds);
     // TODO: group by layer etc
     var event = Oskari.eventBuilder('WFSFeaturesSelectedEvent')(featureIds, layer);
@@ -93,10 +120,15 @@ function highlightFeatures () {
 
 function updateUI () {
     getLayers((layers) => {
-        const selectedLayers = Oskari.getSandbox().getMap().getLayers();
+        // hide any possibly open popups on map before re-render (in case layer was removed etc)
+        hidePopup();
+        // update highlighted features based on basket content
         highlightFeatures();
+        const selectedLayers = Oskari.getSandbox().getMap().getLayers();
         ReactDOM.render(
-            <MainPanel layers={layers} selectedLayers={selectedLayers} />, getRoot());
+            <LocaleProvider value={{ bundleKey: 'file-layerlist' }}>
+                <MainPanel layers={layers} selectedLayers={selectedLayers} drawControl={toggleDrawing} isDrawing={isDrawing}/>
+            </LocaleProvider>, getRoot());
     });
 }
 

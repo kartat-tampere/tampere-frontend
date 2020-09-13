@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Overlay from 'ol/Overlay';
+import { LocaleProvider } from 'oskari-ui/util';
 import './Popup.css';
-import { getFeatureElement } from '../featureshelper';
+import { ObjectData } from './ObjectData';
 
 let overlay;
 
@@ -13,7 +14,8 @@ export const hidePopup = () => {
     return false;
 };
 
-export const addMapOverlay = () => {
+// hacky way to force popup rendered with React on OpenLayers map
+const addMapOverlay = () => {
     const wrapper = document.createElement('div');
     document.body.appendChild(wrapper);
     ReactDOM.render(<div id="popup" className="ol-popup">
@@ -38,7 +40,7 @@ export const showPopup = (x, y, content) => {
         addMapOverlay();
     }
     const el = document.getElementById('popup-content');
-    ReactDOM.render(<React.Fragment>{getFeatureElement(content, true)}</React.Fragment>, el);
+    ReactDOM.render(<LocaleProvider value={{ bundleKey: 'file-layerlist' }}><ObjectData item={content} addBasketLink={true} /></LocaleProvider>, el);
     overlay.setPosition([x, y]);
     const closeBtn = document.getElementById('popup-closer');
     if (!closeBtn.onclick) {

@@ -1,6 +1,6 @@
 
 // From file-upload bundle
-import { FileService } from '../file-upload/service/FileService';
+import { FileService } from '../../file-upload/service/FileService';
 
 let layers = null;
 export const getLayers = (callback) => {

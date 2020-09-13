@@ -35,6 +35,10 @@
     position: absolute;
     top: 2px;
     right: 8px;
+    color: #40A9FF;
+}
+.ol-popup-closer:hover {
+    color: #096DD9;
 }
 .ol-popup-closer:after {
     content: "✖";
