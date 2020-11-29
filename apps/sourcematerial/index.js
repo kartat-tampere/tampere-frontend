@@ -20,6 +20,7 @@ jQuery(document).ready(function () {
                 jQuery('#mapdiv').append('Unable to start');
                 return;
             }
+            appSetup.startupSequence.push({ bundlename: 'sourcematerial' });
             app.init(appSetup);
             app.startApplication();
         },
