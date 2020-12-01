@@ -7,6 +7,7 @@ import 'antd/es/tooltip/style/index.js';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Message } from 'oskari-ui';
+import { Layer } from './Layer';
 
 const StyledRootEl = styled('div')`
     position: fixed;
@@ -18,7 +19,7 @@ const StyledRootEl = styled('div')`
     }
 `;
 
-export const MainPanel = ({ service, drawControl, isDrawing }) => {
+export const MainPanel = ({ service, bbox, drawControl, isDrawing }) => {
     const roles = service.getRoles();
     const [layerSelectVisible, showLayerSelect] = useState(true);
     const [currentRole, setRole] = useState(roles[0]);
@@ -26,6 +27,10 @@ export const MainPanel = ({ service, drawControl, isDrawing }) => {
     const changeRole = (role) => {
         setRole(role);
         layers = service.getLayers(role);
+    };
+    const removeBBOX = () => {
+        drawControl();
+        drawControl();
     };
     const hasLayers = layers.length > 0;
     return (
@@ -54,8 +59,16 @@ export const MainPanel = ({ service, drawControl, isDrawing }) => {
                 { !hasLayers &&
                 <b><Message messageKey='noLayersWithFiles' /></b>
                 }
-
-                { layers.map(layer => (<span key={layer.id}>{ Oskari.getLocalized(layer.name) }</span>)) }
+                { bbox && bbox.length &&
+                <small onClick={removeBBOX}>{ bbox.join() }</small>
+                }
+                <ul style={{ 'list-style-type': 'none' }}>
+                    { layers.map(layer => (
+                        <Layer
+                            key={layer.id}
+                            layer={layer}
+                            service={service} />)) }
+                </ul>
             </Drawer>
         </React.Fragment>
     );
@@ -63,6 +76,7 @@ export const MainPanel = ({ service, drawControl, isDrawing }) => {
 
 MainPanel.propTypes = {
     service: PropTypes.object.isRequired,
+    bbox: PropTypes.array,
     drawControl: PropTypes.func.isRequired,
     isDrawing: PropTypes.bool
 };

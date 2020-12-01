@@ -8,8 +8,10 @@ const BasicBundle = Oskari.clazz.get('Oskari.BasicBundle');
 
 const SOURCEMATERIAL_ID = 'sourcematerial';
 let isDrawing = false;
+let currentBBOX;
 const startDrawSelection = () => {
-    Oskari.getSandbox().postRequestByName('DrawTools.StartDrawingRequest', [SOURCEMATERIAL_ID, 'Polygon']);
+    currentBBOX = null;
+    Oskari.getSandbox().postRequestByName('DrawTools.StartDrawingRequest', [SOURCEMATERIAL_ID, 'Box']);
     isDrawing = true;
     updateUI();
 };
@@ -34,6 +36,8 @@ class SourceMaterialBundle extends BasicBundle {
                     // only interested in finished drawings for attachment selection
                     return;
                 }
+                const coords = event.getGeoJson().features[0].geometry.coordinates[0];
+                currentBBOX = coords[0].concat(coords[3]);
                 endDrawSelection();
             }
         };
@@ -53,7 +57,10 @@ function updateUI () {
         }
         ReactDOM.render(
             <LocaleProvider value={{ bundleKey: SOURCEMATERIAL_ID }}>
-                <MainPanel service={service} drawControl={toggleDrawing} isDrawing={isDrawing}/>
+                <MainPanel service={service}
+                    drawControl={toggleDrawing}
+                    isDrawing={isDrawing}
+                    bbox={currentBBOX} />
             </LocaleProvider>, getRoot());
     });
 }
