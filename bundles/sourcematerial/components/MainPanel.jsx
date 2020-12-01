@@ -31,8 +31,8 @@ export const MainPanel = ({ service, drawControl, isDrawing }) => {
     return (
         <React.Fragment>
             <StyledRootEl>
-                <Radio.Group value={currentRole} onChange={(evt) => changeRole(evt.target.value)}>
-                    { roles.map(role => (<Radio.Button key={role} value={role}>{ role }</Radio.Button>)) }
+                <Radio.Group value={currentRole} style={{ float: 'left' }} onChange={(evt) => changeRole(evt.target.value)}>
+                    { roles.map(role => (<Radio.Button key={role} style={{ display: 'block' }} value={role}>{ role }</Radio.Button>)) }
                 </Radio.Group>
                 <Button onClick={drawControl}>
                     { isDrawing ? <Message messageKey='buttons.endDraw' /> : <Message messageKey='buttons.drawSelection' /> }
@@ -47,6 +47,7 @@ export const MainPanel = ({ service, drawControl, isDrawing }) => {
                 title={<Message messageKey='layerSelection.title' />}
                 placement={'right'}
                 closable={true}
+                mask={false}
                 onClose={() => showLayerSelect(false)}
                 visible={layerSelectVisible}
             >
