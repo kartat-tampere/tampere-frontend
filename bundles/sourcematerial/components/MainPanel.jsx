@@ -62,11 +62,12 @@ export const MainPanel = ({ service, bbox, drawControl, isDrawing }) => {
                 { bbox && bbox.length &&
                 <small onClick={removeBBOX}>{ bbox.join() }</small>
                 }
-                <ul style={{ 'list-style-type': 'none' }}>
+                <ul style={{ listStyleType: 'none' }}>
                     { layers.map(layer => (
                         <Layer
                             key={layer.id}
                             layer={layer}
+                            bbox={bbox}
                             service={service} />)) }
                 </ul>
             </Drawer>

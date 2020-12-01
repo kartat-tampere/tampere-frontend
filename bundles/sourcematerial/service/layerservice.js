@@ -1,8 +1,14 @@
 
 const getFeatures = (bbox, layer, cb) => {
-    var url = Oskari.urls.getRoute('GetWFSFeatures', { bbox, id: layer });
+    var url = Oskari.urls.getRoute('GetWFSFeatures', {
+        bbox,
+        srs: Oskari.getSandbox().getMap().getSrsName() || 'EPSG:3067',
+        id: layer
+    });
     jQuery.get(url, (result) => {
         cb(result);
+    }).fail(() => {
+        cb();
     });
 };
 
