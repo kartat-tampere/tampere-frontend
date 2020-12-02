@@ -39,6 +39,11 @@ jQuery(document).ready(function () {
                 jQuery('#mapdiv').append('Unable to start');
                 return;
             }
+
+// counting layers freezes the UI - hack'ish
+Oskari.clazz.category('Oskari.framework.bundle.hierarchical-layerlist.view.LayerGroupTab', 'performancehack', {
+        _updateLayerCountsAndGroupsVisibility: function () {}
+});
             app.init(appSetup);
             app.startApplication(function () {
                 var sb = Oskari.getSandbox();
