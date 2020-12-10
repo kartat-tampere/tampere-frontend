@@ -13,6 +13,11 @@ Oskari.registerLocalization({
             noSelection: 'Aloita piirtämällä valinta',
             showSelection: 'Näytä valinta'
         },
+        layer: {
+            loading: 'Ladataan kohteita',
+            errorLoading: 'Kohteita ei saatu ladattua',
+            showFeatures: 'Näytä kohteet'
+        },
         noLayersWithFiles: 'Ei aineistoja',
         noFilesOnFeature: 'Kohteella ei ole ladattavia tiedostoja.',
         addedToBasket: 'Valitut kohteet lisätty koriin',
