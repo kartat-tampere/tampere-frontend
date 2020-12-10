@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Message } from 'oskari-ui';
 import { Layer } from './Layer';
+import { Selection } from './Selection';
 
 const StyledRootEl = styled('div')`
     position: fixed;
@@ -19,19 +20,29 @@ const StyledRootEl = styled('div')`
     }
 `;
 
-export const MainPanel = ({ service, bbox, drawControl, isDrawing }) => {
+const getBBOX = (feature) => {
+    if (!feature) {
+        return null;
+    }
+
+    const coords = feature.geometry.coordinates[0];
+    const bbox = coords[0].concat(coords[3]);
+    return bbox;
+};
+
+export const MainPanel = ({ service, selectionFeature, drawControl, isDrawing }) => {
     const roles = service.getRoles();
     const [layerSelectVisible, showLayerSelect] = useState(true);
     const [currentRole, setRole] = useState(roles[0]);
     let layers = service.getLayers(currentRole);
+
     const changeRole = (role) => {
         setRole(role);
         layers = service.getLayers(role);
     };
-    const removeBBOX = () => {
-        drawControl();
-        drawControl();
-    };
+
+    const bbox = getBBOX(selectionFeature);
+
     const hasLayers = layers.length > 0;
     return (
         <React.Fragment>
@@ -56,11 +67,10 @@ export const MainPanel = ({ service, bbox, drawControl, isDrawing }) => {
                 onClose={() => showLayerSelect(false)}
                 visible={layerSelectVisible}
             >
+                <Selection feature={selectionFeature} />
+
                 { !hasLayers &&
                 <b><Message messageKey='noLayersWithFiles' /></b>
-                }
-                { bbox && bbox.length &&
-                <small onClick={removeBBOX}>{ bbox.join() }</small>
                 }
                 <ul style={{ listStyleType: 'none' }}>
                     { layers.map(layer => (
@@ -77,7 +87,7 @@ export const MainPanel = ({ service, bbox, drawControl, isDrawing }) => {
 
 MainPanel.propTypes = {
     service: PropTypes.object.isRequired,
-    bbox: PropTypes.array,
     drawControl: PropTypes.func.isRequired,
+    selectionFeature: PropTypes.object,
     isDrawing: PropTypes.bool
 };

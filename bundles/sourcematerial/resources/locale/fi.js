@@ -6,16 +6,12 @@ Oskari.registerLocalization({
         buttons: {
             layerSelection: 'Aineistot',
             drawSelection: 'Valitse piirtämällä',
-            endDraw: 'Lopeta valinta',
-            basket: 'Tiedostot',
-            clearBasket: 'Poista kaikki',
-            removeLayerFromBasket: 'Poista tason valinnat'
+            endDraw: 'Lopeta valinta'
         },
         layerSelection: {
-            title: 'Aineistot'
-        },
-        basket: {
-            title: 'Aineistot'
+            title: 'Aineistot',
+            noSelection: 'Aloita piirtämällä valinta',
+            showSelection: 'Näytä valinta'
         },
         noLayersWithFiles: 'Ei aineistoja',
         noFilesOnFeature: 'Kohteella ei ole ladattavia tiedostoja.',

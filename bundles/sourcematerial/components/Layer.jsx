@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Spin } from 'oskari-ui';
+import { Spin, Switch, Message } from 'oskari-ui';
+import { addFeaturesToMap, clearFeaturesFromLayer } from '../service/featuresHelper';
 import PropTypes from 'prop-types';
-import { Feature } from './Feature';
+
+const LAYER_ID = 'SourceMaterialFeatures_';
 
 export const Layer = ({ service, layer, bbox }) => {
     const bboxString = bbox && bbox.join();
@@ -46,14 +48,29 @@ export const Layer = ({ service, layer, bbox }) => {
             });
         });
     }
+    const layerId = LAYER_ID + layer.id;
+
+    const onChange = (checked) => {
+        if (checked) {
+            addFeaturesToMap(loadStatus.features, {
+                layerId: layerId
+            });
+        } else {
+            clearFeaturesFromLayer(layerId);
+        }
+    };
     return (<li>
         <b>{ Oskari.getLocalized(layer.name) }</b><br />
-        { loadStatus.loading && <Spin /> }
-        <ul>
-            { loadStatus.loading && <li>error</li> }
-            { loadStatus.features && loadStatus.features
-                .map(f => (<Feature key={f.id} feature={f} />)) }
-        </ul>
+        { loadStatus.loading &&
+            <React.Fragment>
+                <Spin /><Message messageKey='layer.errorLoading' />
+            </React.Fragment> }
+        { loadStatus.loading &&
+            <Message messageKey='layer.errorLoading' /> }
+        { loadStatus.features &&
+            <React.Fragment>
+                <Switch onChange={onChange}/> <Message messageKey='layer.showFeatures' /> ({ loadStatus.features.length })
+            </React.Fragment>}
     </li>);
 };
 
