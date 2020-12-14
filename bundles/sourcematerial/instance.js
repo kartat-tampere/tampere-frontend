@@ -36,15 +36,20 @@ class SourceMaterialBundle extends BasicBundle {
                     // only interested in finished drawings for attachment selection
                     return;
                 }
-                console.log(JSON.stringify(event.getGeoJson()));
+                // console.log(JSON.stringify(event.getGeoJson()));
                 currentSelection = event.getGeoJson().features[0];
+                getService(service => service.setSelection(currentSelection));
                 endDrawSelection();
             }
         };
     }
 
     _startImpl () {
-        updateUI();
+        // init service and call update UI that will get the same ref
+        getService((service) => {
+            service.addListener(() => updateUI(service));
+            updateUI();
+        });
     }
 }
 
@@ -55,12 +60,13 @@ function updateUI () {
             Messaging.error(loc('accessdenied'));
             return;
         }
+        const state = service.getState();
         ReactDOM.render(
             <LocaleProvider value={{ bundleKey: SOURCEMATERIAL_ID }}>
                 <MainPanel service={service}
                     drawControl={toggleDrawing}
                     isDrawing={isDrawing}
-                    selectionFeature={currentSelection} />
+                    state={state} />
             </LocaleProvider>, getRoot());
     });
 }

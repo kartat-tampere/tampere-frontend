@@ -14,8 +14,8 @@ export const Selection = ({ feature }) => {
     const onChange = (checked) => {
         if (checked) {
             addFeaturesToMap(feature, {
-                layerId: LAYER_ID,
-                centerTo: true
+                layerId: LAYER_ID
+                // centerTo: true
             });
         } else {
             clearFeaturesFromLayer(LAYER_ID);

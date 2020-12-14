@@ -20,30 +20,19 @@ const StyledRootEl = styled('div')`
     }
 `;
 
-const getBBOX = (feature) => {
-    if (!feature) {
-        return null;
-    }
-
-    const coords = feature.geometry.coordinates[0];
-    const bbox = coords[0].concat(coords[3]);
-    return bbox;
-};
-
-export const MainPanel = ({ service, selectionFeature, drawControl, isDrawing }) => {
-    const roles = service.getRoles();
+export const MainPanel = ({ service, state, drawControl, isDrawing }) => {
+    const selectionFeature = state.currentSelection;
+    const bbox = state.bbox;
+    const roles = state.roles;
     const [layerSelectVisible, showLayerSelect] = useState(true);
-    const [currentRole, setRole] = useState(roles[0]);
-    let layers = service.getLayers(currentRole);
+    const currentRole = state.currentRole;
+    const layersState = state.layers;
 
     const changeRole = (role) => {
-        setRole(role);
-        layers = service.getLayers(role);
+        service.setCurrentRole(role);
     };
 
-    const bbox = getBBOX(selectionFeature);
-
-    const hasLayers = layers.length > 0;
+    const hasLayers = layersState.length > 0;
     return (
         <React.Fragment>
             <StyledRootEl>
@@ -53,7 +42,7 @@ export const MainPanel = ({ service, selectionFeature, drawControl, isDrawing })
                 <Button onClick={drawControl}>
                     { isDrawing ? <Message messageKey='buttons.endDraw' /> : <Message messageKey='buttons.drawSelection' /> }
                 </Button>
-                <Badge count={layers.length}>
+                <Badge count={layersState.length}>
                     <Button type="primary" onClick={() => showLayerSelect(!layerSelectVisible)}>
                         <Message messageKey='buttons.layerSelection' />
                     </Button>
@@ -73,10 +62,10 @@ export const MainPanel = ({ service, selectionFeature, drawControl, isDrawing })
                 <b><Message messageKey='noLayersWithFiles' /></b>
                 }
                 <ul style={{ listStyleType: 'none' }}>
-                    { layers.map(layer => (
+                    { layersState.map(layerState => (
                         <Layer
-                            key={layer.id}
-                            layer={layer}
+                            key={layerState.layer.id}
+                            layerState={layerState}
                             bbox={bbox}
                             service={service} />)) }
                 </ul>
@@ -88,6 +77,6 @@ export const MainPanel = ({ service, selectionFeature, drawControl, isDrawing })
 MainPanel.propTypes = {
     service: PropTypes.object.isRequired,
     drawControl: PropTypes.func.isRequired,
-    selectionFeature: PropTypes.object,
+    state: PropTypes.object.isRequired,
     isDrawing: PropTypes.bool
 };
