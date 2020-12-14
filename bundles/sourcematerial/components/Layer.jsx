@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Spin, Switch, Message } from 'oskari-ui';
 import { addFeaturesToMap, clearFeaturesFromLayer } from '../service/featuresHelper';
 import PropTypes from 'prop-types';
@@ -9,6 +9,12 @@ export const Layer = ({ layerState, bbox }) => {
     const { loading, layer, features } = layerState;
     const layerId = LAYER_ID + layer.id;
 
+    useEffect(() => {
+        // Specify how to clean up after this unmounts
+        return function cleanup () {
+            clearFeaturesFromLayer(layerId);
+        };
+    });
     const onChange = (checked) => {
         if (checked) {
             addFeaturesToMap(features, {
