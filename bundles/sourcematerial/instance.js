@@ -15,19 +15,24 @@ const clickedFeatures = {
 };
 const handleFeaturesClicked = (delayed = false) => {
     const { coords, features, waiting } = clickedFeatures;
-    if (!coords || !features || (waiting && !delayed)) {
+    if (!coords || !features) {
+        // we don't yet have one of the two things we need
+        return;
+    }
+    if (waiting && !delayed) {
+        // another call scheduled as a delayed call. Wait for it instead.
         return;
     }
     if (!delayed) {
         // make sure we don't have a saved click from another location if we get
-        // the features first.
-        // Call itself again with a flag
+        // the features first. Call itself again with a flag to identify a delayed call.
         clickedFeatures.waiting = true;
         setTimeout(() => handleFeaturesClicked(true), 50);
         return;
     }
+    // reset waiting if we get this far
+    // -> called with delay so we can start expecting more delayed calls
     clickedFeatures.waiting = false;
-    console.log('features clicked', coords, features);
     getService(service => {
         const layers = service.getLayers();
         const getLayerName = (layerId) => layers.find(l => layerId.indexOf(l.id) > 10).name;
