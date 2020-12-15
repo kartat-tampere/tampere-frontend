@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Message } from 'oskari-ui';
 import { addFeaturesToMap, clearFeaturesFromLayer } from '../service/featuresHelper';
@@ -10,7 +10,11 @@ export const Selection = ({ feature }) => {
         clearFeaturesFromLayer(LAYER_ID);
         return (<Message messageKey='layerSelection.noSelection' />);
     }
+    const [isShown, setShown] = useState(true);
 
+    useEffect(() => {
+        onChange(isShown);
+    });
     const onChange = (checked) => {
         if (checked) {
             addFeaturesToMap(feature, {
@@ -20,10 +24,11 @@ export const Selection = ({ feature }) => {
         } else {
             clearFeaturesFromLayer(LAYER_ID);
         }
+        setShown(checked);
     };
 
     return (<div>
-        <Switch onChange={onChange}/> <Message messageKey='layerSelection.showSelection' />
+        <Switch onChange={onChange} checked={isShown} /> <Message messageKey='layerSelection.showSelection' />
         <br /><br />
     </div>);
 };

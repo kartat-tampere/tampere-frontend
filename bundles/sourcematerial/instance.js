@@ -13,6 +13,7 @@ const startDrawSelection = () => {
     currentSelection = null;
     Oskari.getSandbox().postRequestByName('DrawTools.StartDrawingRequest', [SOURCEMATERIAL_ID, 'Box']);
     isDrawing = true;
+    getService(service => service.setSelection(null));
     updateUI();
 };
 const endDrawSelection = () => {
