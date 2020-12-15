@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Switch, Message } from 'oskari-ui';
 import { addFeaturesToMap, clearFeaturesFromLayer } from '../service/featuresHelper';
 
-const LAYER_ID = 'SourceMaterialSelection';
+export const LAYER_ID = 'SourceMaterialSelection';
 
 export const Selection = ({ feature }) => {
     if (!feature) {

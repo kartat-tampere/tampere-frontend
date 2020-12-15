@@ -3,10 +3,28 @@ import ReactDOM from 'react-dom';
 import { Messaging, LocaleProvider } from 'oskari-ui/util';
 import { MainPanel } from './components/MainPanel';
 import { getService } from './service/layerservice';
+import { LAYER_ID } from './components/Selection';
 
 const BasicBundle = Oskari.clazz.get('Oskari.BasicBundle');
 
 const SOURCEMATERIAL_ID = 'sourcematerial';
+const clickedFeatures = {};
+const handleFeaturesClicked = () => {
+    const { coords, features } = clickedFeatures;
+    if (!coords || !features) {
+        return;
+    }
+    console.log('features clicked', coords, features);
+    /*
+    features: [{
+        geojson: {type: "FeatureCollection", features: Array(1)}
+        layerId: "SourceMaterialFeatures_2023"
+    }]
+    */
+    delete clickedFeatures.coords;
+    delete clickedFeatures.features;
+};
+
 let isDrawing = false;
 let currentSelection;
 const startDrawSelection = () => {
@@ -37,10 +55,24 @@ class SourceMaterialBundle extends BasicBundle {
                     // only interested in finished drawings for attachment selection
                     return;
                 }
-                // console.log(JSON.stringify(event.getGeoJson()));
                 currentSelection = event.getGeoJson().features[0];
                 getService(service => service.setSelection(currentSelection));
                 endDrawSelection();
+            },
+            MapClickedEvent: (event) => {
+                clickedFeatures.coords = event.getLonLat();
+                handleFeaturesClicked();
+            },
+            FeatureEvent: (event) => {
+                if (event.getOperation() !== 'click') {
+                    return;
+                }
+                const features = event.getParams().features.filter(f => f.layerId !== LAYER_ID);
+                if (!features.length) {
+                    return;
+                }
+                clickedFeatures.features = features;
+                handleFeaturesClicked();
             }
         };
     }
