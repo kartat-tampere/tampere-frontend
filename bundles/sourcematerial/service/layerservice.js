@@ -5,9 +5,8 @@
 let currentRole = null;
 const setCurrentRole = role => {
     currentRole = role;
-    // TODO: trigger loading
-    console.log('currentRole ', currentRole);
     if (bbox && currentRole) {
+        // trigger loading
         service.getLayers(role).forEach(l => loadFeatures(l.id));
         // TODO: remove layers that have features but are not part of this role?
     }
@@ -43,7 +42,6 @@ let bbox = null;
 const setSelection = (feature) => {
     currentSelection = feature;
     bbox = getBBOX(feature);
-    console.log('setSelection', feature);
     if (bbox && currentRole) {
         service.getLayers(currentRole).forEach(l => loadFeatures(l.id));
     }
@@ -67,7 +65,6 @@ const getBBOX = () => {
 const layerFeatures = {};
 
 const loadFeatures = (layer) => {
-    console.log('Loading for ' + layer);
     if (!bbox) {
         return;
     }
@@ -79,7 +76,6 @@ const loadFeatures = (layer) => {
     });
     jQuery.get(url, (result) => {
         layerFeatures[layer] = result.features;
-        console.log(layerFeatures[layer]);
     }).fail(() => {
         // cb();
         // null layerFeatures[layer] and NOT loading -> error
