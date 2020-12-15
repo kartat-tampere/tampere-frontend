@@ -56,7 +56,7 @@ const getBBOX = () => {
     const coords = currentSelection.geometry.coordinates[0];
     const bbox = coords[0].concat(coords[2]);
     // the correct order might be 0,3,2,1
-    return bbox;
+    return [bbox[0], bbox[3], bbox[2], bbox[1]];
 };
 
 /**
@@ -89,7 +89,7 @@ const getFeatures = layer => {
     return layerFeatures[layer];
 };
 const getState = () => {
-    let layers = service.getLayers(currentRole).map(layer => {
+    const layers = service.getLayers(currentRole).map(layer => {
         return {
             layer,
             features: getFeatures(layer.id),

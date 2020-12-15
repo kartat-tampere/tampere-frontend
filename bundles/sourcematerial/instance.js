@@ -4,25 +4,43 @@ import { Messaging, LocaleProvider } from 'oskari-ui/util';
 import { MainPanel } from './components/MainPanel';
 import { getService } from './service/layerservice';
 import { LAYER_ID } from './components/Selection';
+import { showPopup } from './components/Popup';
+import { PopupContent } from './components/PopupContent';
 
 const BasicBundle = Oskari.clazz.get('Oskari.BasicBundle');
 
 const SOURCEMATERIAL_ID = 'sourcematerial';
-const clickedFeatures = {};
-const handleFeaturesClicked = () => {
-    const { coords, features } = clickedFeatures;
-    if (!coords || !features) {
+const clickedFeatures = {
+    waiting: false
+};
+const handleFeaturesClicked = (delayed = false) => {
+    const { coords, features, waiting } = clickedFeatures;
+    if (!coords || !features || (waiting && !delayed)) {
         return;
     }
+    if (!delayed) {
+        // make sure we don't have a saved click from another location if we get
+        // the features first.
+        // Call itself again with a flag
+        clickedFeatures.waiting = true;
+        setTimeout(() => handleFeaturesClicked(true), 50);
+        return;
+    }
+    clickedFeatures.waiting = false;
     console.log('features clicked', coords, features);
-    /*
-    features: [{
-        geojson: {type: "FeatureCollection", features: Array(1)}
-        layerId: "SourceMaterialFeatures_2023"
-    }]
-    */
-    delete clickedFeatures.coords;
-    delete clickedFeatures.features;
+    getService(service => {
+        const layers = service.getLayers();
+        const getLayerName = (layerId) => layers.find(l => layerId.indexOf(l.id) > 10).name;
+        const content = features.map(layerFeatures => {
+            return {
+                ...layerFeatures,
+                layerName: Oskari.getLocalized(getLayerName(layerFeatures.layerId))
+            };
+        });
+        showPopup(coords.lon, coords.lat, <PopupContent features={content} />);
+        delete clickedFeatures.coords;
+        delete clickedFeatures.features;
+    });
 };
 
 let isDrawing = false;
@@ -69,6 +87,7 @@ class SourceMaterialBundle extends BasicBundle {
                 }
                 const features = event.getParams().features.filter(f => f.layerId !== LAYER_ID);
                 if (!features.length) {
+                    delete clickedFeatures.coords;
                     return;
                 }
                 clickedFeatures.features = features;
