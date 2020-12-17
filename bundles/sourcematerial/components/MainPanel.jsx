@@ -35,7 +35,7 @@ export const MainPanel = ({ service, state, drawControl, isDrawing }) => {
         .map(l => l.features && l.features.length)
         .reduce(sum, 0);
 
-    const [layerSelectVisible, showLayerSelect] = useState(featureCount > 0);
+    const [layerSelectVisible, showLayerSelect] = useState(true);
     const currentRole = state.currentRole;
 
     const changeRole = (role) => {
@@ -49,15 +49,16 @@ export const MainPanel = ({ service, state, drawControl, isDrawing }) => {
                 <Button onClick={drawControl}>
                     { isDrawing ? <Message messageKey='buttons.endDraw' /> : <Message messageKey='buttons.drawSelection' /> }
                 </Button><br/>
-
-                <Radio.Group value={currentRole} style={{ float: 'left' }} onChange={(evt) => changeRole(evt.target.value)}>
-                    { roles.map(role => (
-                        <Radio.Button key={role} style={{ display: 'block' }} value={role}>
-                            <Message messageKey={ 'roles.' + role } defaultMsg={role} />
-                        </Radio.Button>
-                    )) }
-                </Radio.Group><br/>
-
+                { roles.length > 1 &&
+                    <Radio.Group value={currentRole} style={{ float: 'left' }} onChange={(evt) => changeRole(evt.target.value)}>
+                        { roles.map(role => (
+                            <Radio.Button key={role} style={{ display: 'block' }} value={role}>
+                                <Message messageKey={ 'roles.' + role } defaultMsg={role} />
+                            </Radio.Button>
+                        )) }
+                    </Radio.Group>
+                }
+                <br/>
                 <Badge count={featureCount}>
                     <Button type="primary" onClick={() => showLayerSelect(!layerSelectVisible)}>
                         <Message messageKey='buttons.layerSelection' />
@@ -69,7 +70,7 @@ export const MainPanel = ({ service, state, drawControl, isDrawing }) => {
                 placement={'right'}
                 closable={true}
                 mask={false}
-                width={window.innerWidth > 600 ? 500 : window.innerWidth - 100}
+                width={window.innerWidth > 500 ? 450 : window.innerWidth - 100}
                 onClose={() => showLayerSelect(false)}
                 visible={layerSelectVisible}
             >
