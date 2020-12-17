@@ -53,11 +53,12 @@ export const MainPanel = ({ service, state, drawControl, isDrawing }) => {
                 placement={'right'}
                 closable={true}
                 mask={false}
+                width={window.innerWidth > 600 ? 500 : window.innerWidth - 100}
                 onClose={() => showLayerSelect(false)}
                 visible={layerSelectVisible}
             >
                 <Selection feature={selectionFeature} />
-
+                <br />
                 { !hasLayers &&
                 <b><Message messageKey='noLayersWithFiles' /></b>
                 }
