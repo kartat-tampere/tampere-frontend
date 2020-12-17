@@ -10,13 +10,17 @@ import { Message } from 'oskari-ui';
 import { Layer } from './Layer';
 import { Selection } from './Selection';
 
-const StyledRootEl = styled('div')`
+const ButtonContainer = styled('div')`
     position: fixed;
     top: 10px;
     left: 10px;
     z-index: 50;
+
     > button {
-        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    > span {
+        margin-top: 10px;
     }
 `;
 
@@ -24,9 +28,15 @@ export const MainPanel = ({ service, state, drawControl, isDrawing }) => {
     const selectionFeature = state.currentSelection;
     const bbox = state.bbox;
     const roles = state.roles;
-    const [layerSelectVisible, showLayerSelect] = useState(true);
+    const layersState = state.layers || [];
+
+    const sum = (accumulator, currentValue = 0) => accumulator + currentValue;
+    const featureCount = layersState
+        .map(l => l.features && l.features.length)
+        .reduce(sum, 0);
+
+    const [layerSelectVisible, showLayerSelect] = useState(featureCount > 0);
     const currentRole = state.currentRole;
-    const layersState = state.layers;
 
     const changeRole = (role) => {
         service.setCurrentRole(role);
@@ -35,19 +45,25 @@ export const MainPanel = ({ service, state, drawControl, isDrawing }) => {
     const hasLayers = layersState.length > 0;
     return (
         <React.Fragment>
-            <StyledRootEl>
-                <Radio.Group value={currentRole} style={{ float: 'left' }} onChange={(evt) => changeRole(evt.target.value)}>
-                    { roles.map(role => (<Radio.Button key={role} style={{ display: 'block' }} value={role}>{ role }</Radio.Button>)) }
-                </Radio.Group>
+            <ButtonContainer>
                 <Button onClick={drawControl}>
                     { isDrawing ? <Message messageKey='buttons.endDraw' /> : <Message messageKey='buttons.drawSelection' /> }
-                </Button>
-                <Badge count={layersState.length}>
+                </Button><br/>
+
+                <Radio.Group value={currentRole} style={{ float: 'left' }} onChange={(evt) => changeRole(evt.target.value)}>
+                    { roles.map(role => (
+                        <Radio.Button key={role} style={{ display: 'block' }} value={role}>
+                            <Message messageKey={ 'roles.' + role } defaultMsg={role} />
+                        </Radio.Button>
+                    )) }
+                </Radio.Group><br/>
+
+                <Badge count={featureCount}>
                     <Button type="primary" onClick={() => showLayerSelect(!layerSelectVisible)}>
                         <Message messageKey='buttons.layerSelection' />
                     </Button>
                 </Badge>
-            </StyledRootEl>
+            </ButtonContainer>
             <Drawer
                 title={<Message messageKey='layerSelection.title' />}
                 placement={'right'}

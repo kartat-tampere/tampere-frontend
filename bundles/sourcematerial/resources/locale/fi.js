@@ -18,6 +18,10 @@ Oskari.registerLocalization({
             errorLoading: 'Kohteita ei saatu ladattua',
             showFeatures: 'Näytä kohteet'
         },
+        roles: {
+            LAHTO_SELVITYKSET: 'Selvitykset',
+            LAHTO_KAAVAHARKINTA: 'Kaavaharkinta'
+        },
         noLayersWithFiles: 'Ei aineistoja',
         noFilesOnFeature: 'Kohteella ei ole ladattavia tiedostoja.',
         addedToBasket: 'Valitut kohteet lisätty koriin',
