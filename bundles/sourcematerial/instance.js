@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Messaging, LocaleProvider } from 'oskari-ui/util';
 import { MainPanel } from './components/MainPanel';
 import { getService } from './service/layerservice';
-import { LAYER_ID } from './components/Selection';
+import { LAYER_SELECTION } from './service/featuresHelper';
 import { showPopup } from './components/Popup';
 import { PopupContent } from './components/PopupContent';
 
@@ -75,7 +75,7 @@ class SourceMaterialBundle extends BasicBundle {
         this.eventHandlers = {
             DrawingEvent: (event) => {
                 if (!event.getIsFinished() || event.getId() !== SOURCEMATERIAL_ID) {
-                    // only interested in finished drawings for attachment selection
+                    // only interested in finished drawings for source material selection
                     return;
                 }
                 currentSelection = event.getGeoJson().features[0];
@@ -90,7 +90,7 @@ class SourceMaterialBundle extends BasicBundle {
                 if (event.getOperation() !== 'click') {
                     return;
                 }
-                const features = event.getParams().features.filter(f => f.layerId !== LAYER_ID);
+                const features = event.getParams().features.filter(f => f.layerId !== LAYER_SELECTION);
                 if (!features.length) {
                     delete clickedFeatures.coords;
                     return;

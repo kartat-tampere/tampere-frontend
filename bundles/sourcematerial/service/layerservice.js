@@ -1,15 +1,14 @@
+import { clearFeaturesFromLayer, LAYER_PREFIX } from './featuresHelper';
 
 /**
  * Roles
  */
 let currentRole = null;
 const setCurrentRole = role => {
+    // remove any features from map before changing role
+    cleanupFeaturesFromMap();
     currentRole = role;
-    if (bbox && currentRole) {
-        // trigger loading
-        service.getLayers(role).forEach(l => loadFeatures(l.id));
-        // TODO: remove layers that have features but are not part of this role?
-    }
+    fetchFeatures();
     notify();
 };
 
@@ -42,9 +41,7 @@ let bbox = null;
 const setSelection = (feature) => {
     currentSelection = feature;
     bbox = getBBOX(feature);
-    if (bbox && currentRole) {
-        service.getLayers(currentRole).forEach(l => loadFeatures(l.id));
-    }
+    fetchFeatures();
     notify();
 };
 
@@ -63,6 +60,21 @@ const getBBOX = () => {
  * Layer features
  */
 const layerFeatures = {};
+
+const fetchFeatures = () => {
+    if (bbox && currentRole) {
+        service.getLayers(currentRole).forEach(l => loadFeatures(l.id));
+    }
+};
+
+const cleanupFeaturesFromMap = () => {
+    if (!service) {
+        // the first call setting the default role will be before the service is
+        // initialized -> skip as we are starting up at this point
+        return;
+    }
+    service.getLayers(currentRole).forEach(l => clearFeaturesFromLayer(LAYER_PREFIX + l.id));
+};
 
 const loadFeatures = (layer) => {
     if (!bbox) {

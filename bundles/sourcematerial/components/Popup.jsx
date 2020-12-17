@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import Overlay from 'ol/Overlay';
 import { LocaleProvider } from 'oskari-ui/util';
 import './Popup.css';
-import { ObjectData } from './ObjectData';
 
 let overlay;
 

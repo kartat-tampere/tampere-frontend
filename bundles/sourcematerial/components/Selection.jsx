@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Message } from 'oskari-ui';
-import { addFeaturesToMap, clearFeaturesFromLayer } from '../service/featuresHelper';
-
-export const LAYER_ID = 'SourceMaterialSelection';
+import { addFeaturesToMap, clearFeaturesFromLayer, LAYER_SELECTION } from '../service/featuresHelper';
 
 export const Selection = ({ feature }) => {
     if (!feature) {
-        clearFeaturesFromLayer(LAYER_ID);
+        clearFeaturesFromLayer(LAYER_SELECTION);
         return (<Message messageKey='layerSelection.noSelection' />);
     }
     const [isShown, setShown] = useState(true);
@@ -18,18 +16,18 @@ export const Selection = ({ feature }) => {
     const onChange = (checked) => {
         if (checked) {
             addFeaturesToMap(feature, {
-                layerId: LAYER_ID
+                layerId: LAYER_SELECTION
                 // centerTo: true
             });
         } else {
-            clearFeaturesFromLayer(LAYER_ID);
+            clearFeaturesFromLayer(LAYER_SELECTION);
         }
         setShown(checked);
     };
 
     return (<div>
         <Switch onChange={onChange} checked={isShown} /> <Message messageKey='layerSelection.showSelection' />
-        <br /><br />
+        <br />
     </div>);
 };
 

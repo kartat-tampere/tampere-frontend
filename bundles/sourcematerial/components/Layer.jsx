@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Spin, Switch, Message } from 'oskari-ui';
-import { addFeaturesToMap, clearFeaturesFromLayer } from '../service/featuresHelper';
+import { addFeaturesToMap, clearFeaturesFromLayer, LAYER_PREFIX } from '../service/featuresHelper';
 import PropTypes from 'prop-types';
-
-const LAYER_ID = 'SourceMaterialFeatures_';
 
 export const Layer = ({ layerState, bbox }) => {
     const { loading, layer, features } = layerState;
-    const layerId = LAYER_ID + layer.id;
-
+    const layerId = LAYER_PREFIX + layer.id;
+    /*
+// This doesn't work: if the drawer is closed -> unmounted -> features removed
     useEffect(() => {
         // Specify how to clean up after this unmounts
         return function cleanup () {
             clearFeaturesFromLayer(layerId);
         };
     });
+    */
     const onChange = (checked) => {
         if (checked) {
             addFeaturesToMap(features, {

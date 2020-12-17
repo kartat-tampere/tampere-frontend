@@ -18,7 +18,8 @@ export const addFeaturesToMap = (features, opts = {}) => {
     Oskari.getSandbox().postRequestByName(
         'MapModulePlugin.AddFeaturesToMapRequest', [geojson, options]);
 };
-
+export const LAYER_SELECTION = 'SourceMaterialSelection';
+export const LAYER_PREFIX = 'SourceMaterialFeatures_';
 export const clearFeaturesFromLayer = (layerId) => {
     Oskari.getSandbox().postRequestByName(
         'MapModulePlugin.RemoveFeaturesFromMapRequest', [null, null, layerId]);
