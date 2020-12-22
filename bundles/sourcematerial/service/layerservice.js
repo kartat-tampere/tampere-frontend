@@ -81,7 +81,7 @@ const loadFeatures = (layer) => {
         return;
     }
     startLoading(layer);
-    var url = Oskari.urls.getRoute('GetWFSFeatures', {
+    var url = Oskari.urls.getRoute('SourceMaterialFeatures', {
         bbox: bbox.join(),
         srs: Oskari.getSandbox().getMap().getSrsName() || 'EPSG:3067',
         id: layer
