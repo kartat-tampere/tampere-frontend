@@ -1,4 +1,4 @@
-import { clearFeaturesFromLayer, LAYER_PREFIX } from './featuresHelper';
+import { clearFeaturesFromLayer, LAYER_PREFIX, getBboxFromFeature, getFeaturesInsideGeometry } from './featuresHelper';
 
 /**
  * Roles
@@ -40,20 +40,9 @@ let currentSelection = null;
 let bbox = null;
 const setSelection = (feature) => {
     currentSelection = feature;
-    bbox = getBBOX(feature);
+    bbox = getBboxFromFeature(feature);
     fetchFeatures();
     notify();
-};
-
-const getBBOX = () => {
-    if (!currentSelection) {
-        return null;
-    }
-
-    const coords = currentSelection.geometry.coordinates[0];
-    const bbox = coords[0].concat(coords[2]);
-    // the correct order might be 0,3,2,1
-    return [bbox[0], bbox[3], bbox[2], bbox[1]];
 };
 
 /**
@@ -87,10 +76,12 @@ const loadFeatures = (layer) => {
         id: layer
     });
     jQuery.get(url, (result) => {
-        layerFeatures[layer] = result.features;
+        layerFeatures[layer] =
+            getFeaturesInsideGeometry(result.features, currentSelection.geometry);
     }).fail(() => {
         // cb();
         // null layerFeatures[layer] and NOT loading -> error
+        // startLoading removes previously loaded features so we don't need to clean up here
     }).done(() => {
         loadingCompleted(layer);
         notify();
@@ -152,7 +143,6 @@ const parseResult = (data) => {
     return {
         getRoles: () => Object.keys(data),
         getLayers: (role = currentRole) => data[role] || [],
-        getBBOX,
         getFeatures,
         addListener,
         loadFeatures,

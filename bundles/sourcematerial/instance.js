@@ -52,7 +52,7 @@ let isDrawing = false;
 let currentSelection;
 const startDrawSelection = () => {
     currentSelection = null;
-    Oskari.getSandbox().postRequestByName('DrawTools.StartDrawingRequest', [SOURCEMATERIAL_ID, 'Box']);
+    Oskari.getSandbox().postRequestByName('DrawTools.StartDrawingRequest', [SOURCEMATERIAL_ID, 'Polygon']);
     isDrawing = true;
     getService(service => service.setSelection(null));
     updateUI();
