@@ -118,12 +118,36 @@ const getState = () => {
 };
 
 /**
+ * Baselayers handling
+ */
+const addBaseLayers = (layers = []) => {
+    const layerService = getLayerService();
+    layers.forEach(layer => {
+        if (layerService.findMapLayer(layer.id)) {
+            // already registered
+            return;
+        }
+        const oskariLayer = layerService.createMapLayer(layer);
+        layerService.addLayer(oskariLayer);
+    });
+};
+
+function getLayerService () {
+    return Oskari.getSandbox()
+        .getService('Oskari.mapframework.service.MapLayerService');
+}
+
+/**
  * service and listeners
  */
 const listeners = [];
 const notify = (data) => listeners.forEach(handler => handler(data));
 const addListener = (handler) => listeners.push(handler);
+
 const parseResult = (data) => {
+    addBaseLayers(data.__layers);
+    delete data.__layers;
+
     setCurrentRole(Object.keys(data)[0]);
     return {
         getRoles: () => Object.keys(data),
