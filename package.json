@@ -7,8 +7,8 @@
   ],
   "dependencies": {
     "cesium": "1.64.0",
-    "oskari-frontend": "git+https://git@github.com/oskariorg/oskari-frontend.git#2.1.0",
-    "oskari-frontend-contrib": "git+https://git@github.com/oskariorg/oskari-frontend-contrib.git#2.1.0"
+    "oskari-frontend": "git+https://git@github.com/oskariorg/oskari-frontend.git#2.2.0",
+    "oskari-frontend-contrib": "git+https://git@github.com/oskariorg/oskari-frontend-contrib.git#2.2.0"
   },
   "scripts": {
     "dev-mode": "node ./node_modules/oskari-frontend/scripts/oskari-dev-mode",
