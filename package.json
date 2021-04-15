@@ -6,9 +6,8 @@
     "Oskari"
   ],
   "dependencies": {
-    "cesium": "1.64.0",
-    "oskari-frontend": "git+https://git@github.com/oskariorg/oskari-frontend.git#2.2.0",
-    "oskari-frontend-contrib": "git+https://git@github.com/oskariorg/oskari-frontend-contrib.git#2.2.0"
+    "oskari-frontend": "git+https://git@github.com/ZakarFin/oskari-frontend.git#latest-hierarchy",
+    "oskari-frontend-contrib": "git+https://git@github.com/ZakarFin/oskari-frontend-contrib.git#latest-hierarchy"
   },
   "scripts": {
     "dev-mode": "node ./node_modules/oskari-frontend/scripts/oskari-dev-mode",
