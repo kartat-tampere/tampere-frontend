@@ -1,5 +1,3 @@
-import { addAccessLogNotice } from '../../bundles/accesslog/hook.js';
-
 /**
  * Start when dom ready
  */
@@ -49,7 +47,6 @@ Oskari.clazz.category('Oskari.framework.bundle.hierarchical-layerlist.view.Layer
             app.startApplication(function () {
                 var sb = Oskari.getSandbox();
                 gfiParamHandler(sb);
-                addAccessLogNotice();
             });
         },
         error: function (jqXHR, textStatus) {

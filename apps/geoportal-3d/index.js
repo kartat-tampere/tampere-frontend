@@ -1,8 +1,6 @@
-import { addAccessLogNotice } from '../../bundles/accesslog/hook.js';
 
 jQuery(document).ready(function () {
     function onSuccess () {
-        addAccessLogNotice();
     }
     function onError () {
         jQuery('#mapdiv').append('Unable to start');
