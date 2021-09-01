@@ -6,8 +6,8 @@
     "Oskari"
   ],
   "dependencies": {
-    "oskari-frontend": "git+https://git@github.com/ZakarFin/oskari-frontend.git#latest-hierarchy",
-    "oskari-frontend-contrib": "git+https://git@github.com/ZakarFin/oskari-frontend-contrib.git#latest-hierarchy"
+    "oskari-frontend": "../oskari-frontend",
+    "oskari-frontend-contrib": "../oskari-frontend-contrib"
   },
   "scripts": {
     "dev-mode": "node ./node_modules/oskari-frontend/scripts/oskari-dev-mode",
@@ -19,8 +19,8 @@
     "dev-mode:clean": "(rm -r node_modules || true) && (rm package-lock.json || true)",
     "build": "webpack --config ./node_modules/oskari-frontend/webpack.config.js --mode production --progress --env.appdef=apps --env.absolutePublicPath=true",
     "start": "webpack-dev-server --config ./node_modules/oskari-frontend/webpack.config.js --hot --env.appdef=devapp:apps --env.absolutePublicPath=true",
-    "start:dev": "npm run dev-mode:on && node ./node_modules/oskari-frontend/node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./node_modules/oskari-frontend/webpack.config.js --hot --env.appdef=devapp:applications",
-    "build:dev": "npm run dev-mode:on && node ./node_modules/oskari-frontend/node_modules/webpack/bin/webpack.js --config ./node_modules/oskari-frontend/webpack.config.js --mode production --progress --env.appdef=applications",
+    "start:dev": "npm run dev-mode:on && node ./node_modules/oskari-frontend/node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./node_modules/oskari-frontend/webpack.config.js --hot --env.appdef=devapp:apps",
+    "build:dev": "npm run dev-mode:on && node ./node_modules/oskari-frontend/node_modules/webpack/bin/webpack.js --config ./node_modules/oskari-frontend/webpack.config.js --mode production --progress --env.appdef=apps",
     "sprite": "node ./node_modules/oskari-frontend/webpack/sprite.js",
     "storybook": "start-storybook",
     "test": "eslint --config ./node_modules/oskari-frontend/.eslintrc.js bundles"
