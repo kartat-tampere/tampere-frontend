@@ -13,5 +13,4 @@ import 'oskari-loader!oskari-frontend/packages/mapping/ol/toolbar/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/drawtools/bundle.js';
 
 import 'oskari-loader!../../bundles/file-layerlist/bundle.js';
-import '../../bundles/accesslog/hook.js';
 import './css/overwritten.css';

@@ -1,4 +1,5 @@
-'use strict';
+import { addAccessLogNotice } from '../../bundles/accesslog/hook.js';
+
 /**
  * Start when dom ready
  */
@@ -22,7 +23,9 @@ jQuery(document).ready(function () {
             }
             appSetup.startupSequence.push({ bundlename: 'sourcematerial' });
             app.init(appSetup);
-            app.startApplication();
+            app.startApplication(function () {
+                addAccessLogNotice();
+            });
         },
         error: function (jqXHR, textStatus) {
             if (jqXHR.status !== 0) {
