@@ -1,14 +1,14 @@
 {
   "name": "oskari-frontend-tampere",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "kartat.tampere.fi/oskari bundles & app conf",
   "keywords": [
     "Oskari"
   ],
   "dependencies": {
     "cesium": "1.64.0",
-    "oskari-frontend": "git+https://git@github.com/oskariorg/oskari-frontend.git#2.1.0",
-    "oskari-frontend-contrib": "git+https://git@github.com/oskariorg/oskari-frontend-contrib.git#2.1.0"
+    "oskari-frontend": "git+https://git@github.com/oskariorg/oskari-frontend.git#2.3.1",
+    "oskari-frontend-contrib": "git+https://git@github.com/oskariorg/oskari-frontend-contrib.git#2.3.1"
   },
   "scripts": {
     "dev-mode": "node ./node_modules/oskari-frontend/scripts/oskari-dev-mode",
