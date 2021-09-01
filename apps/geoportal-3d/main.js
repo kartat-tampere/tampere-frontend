@@ -49,4 +49,5 @@ import 'oskari-lazy-loader?admin-users!oskari-frontend/packages/framework/bundle
 import 'oskari-lazy-loader?admin!oskari-frontend/packages/admin/bundle/admin/bundle.js';
 import 'oskari-lazy-loader?admin-wfs-search-channel!oskari-frontend-contrib/packages/tampere/bundle/admin-wfs-search-channel/bundle.js';
 
+import '../../bundles/accesslog/hook.js';
 import './css/overwritten.css';

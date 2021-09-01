@@ -19,3 +19,12 @@ Oskari.registerLocalization({
         }
     }
 }, true);
+
+Oskari.registerLocalization({
+    'lang': 'en',
+    'key': 'AccessLog',
+    'value': {
+        'title': 'Note!',
+        'warning': 'Map layer includes data that requires access logging. By continuing you accept your usage to be tracked.'
+    }
+});
