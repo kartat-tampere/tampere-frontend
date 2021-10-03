@@ -50,3 +50,9 @@ import 'oskari-lazy-loader?admin!oskari-frontend/packages/admin/bundle/admin/bun
 import 'oskari-lazy-loader?admin-wfs-search-channel!oskari-frontend-contrib/packages/tampere/bundle/admin-wfs-search-channel/bundle.js';
 
 import './css/overwritten.css';
+
+import { addAccessLogNotice } from '../../bundles/accesslog/hook.js';
+
+Oskari.on('app.start', () => {
+    addAccessLogNotice();
+});

@@ -1,4 +1,3 @@
-'use strict';
 /**
  * Start when dom ready
  */

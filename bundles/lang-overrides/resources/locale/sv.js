@@ -19,3 +19,12 @@ Oskari.registerLocalization({
         }
     }
 }, true);
+
+Oskari.registerLocalization({
+    'lang': 'sv',
+    'key': 'AccessLog',
+    'value': {
+        'title': 'Varmistus',
+        'warning': 'Taso sisältää tietoa jonka takia sen käyttöä seurataan. Jatkamalla hyväksyt käyttösi seurannan.'
+    }
+});
