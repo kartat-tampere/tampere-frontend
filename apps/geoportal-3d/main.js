@@ -15,6 +15,7 @@ import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapmyplaces/bundle.js'
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapuserlayers/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/maparcgis/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/ui-components/bundle.js';
+import 'oskari-loader!oskari-frontend/packages/mapping/ol/userstyle/bundle.js';
 
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/drawtools/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/toolbar/bundle.js';
@@ -49,6 +50,7 @@ import 'oskari-lazy-loader?admin-users!oskari-frontend/packages/framework/bundle
 import 'oskari-lazy-loader?admin!oskari-frontend/packages/admin/bundle/admin/bundle.js';
 import 'oskari-lazy-loader?admin-wfs-search-channel!oskari-frontend-contrib/packages/tampere/bundle/admin-wfs-search-channel/bundle.js';
 
+import '../../bundles/hacks.js';
 import './css/overwritten.css';
 
 import { addAccessLogNotice } from '../../bundles/accesslog/hook.js';

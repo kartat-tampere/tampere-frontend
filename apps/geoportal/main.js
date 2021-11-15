@@ -14,6 +14,7 @@ import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapmyplaces/bundle.js'
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapuserlayers/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/maparcgis/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/ui-components/bundle.js';
+import 'oskari-loader!oskari-frontend/packages/mapping/ol/userstyle/bundle.js';
 
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/drawtools/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/mapping/ol/toolbar/bundle.js';
@@ -47,22 +48,21 @@ import 'oskari-loader!oskari-frontend-contrib/packages/tampere/bundle/search-fro
 import 'oskari-loader!oskari-frontend-contrib/packages/tampere/bundle/selected-featuredata/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/announcements/bundle.js';
 import 'oskari-lazy-loader?content-editor!oskari-frontend-contrib/packages/tampere/bundle/content-editor/bundle.js';
-//import 'oskari-loader!oskari-frontend-contrib/packages/tampere/bundle/content-editor/bundle.js';
 
 import 'oskari-loader!../../bundles/file-upload/bundle.js';
 
 import 'oskari-lazy-loader?file-layerlist!../../bundles/file-layerlist/bundle.js';
 
 // /tampereeeeee
-import 'oskari-loader!oskari-frontend/packages/admin/bundle/admin-layereditor/bundle.js';
 
-//import 'oskari-lazy-loader?admin-layereditor!oskari-frontend/packages/admin/bundle/admin-layereditor/bundle.js';
+import 'oskari-lazy-loader?admin-layereditor!oskari-frontend/packages/admin/bundle/admin-layereditor/bundle.js';
 import 'oskari-lazy-loader?admin-announcements!oskari-frontend/packages/admin/bundle/admin-announcements/bundle.js';
 import 'oskari-lazy-loader?admin-layerrights!oskari-frontend/packages/framework/bundle/admin-layerrights/bundle.js';
 import 'oskari-lazy-loader?admin-users!oskari-frontend/packages/framework/bundle/admin-users/bundle.js';
 import 'oskari-lazy-loader?admin!oskari-frontend/packages/admin/bundle/admin/bundle.js';
 import 'oskari-lazy-loader?admin-wfs-search-channel!oskari-frontend-contrib/packages/tampere/bundle/admin-wfs-search-channel/bundle.js';
 
+import '../../bundles/hacks.js';
 import './css/overwritten.css';
 
 import { addAccessLogNotice } from '../../bundles/accesslog/hook.js';

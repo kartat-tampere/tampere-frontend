@@ -15,6 +15,7 @@ import 'oskari-loader!oskari-frontend/packages/mapping/ol/drawtools/bundle.js';
 import 'oskari-loader!../../bundles/sourcematerial/bundle.js';
 import './css/overwritten.css';
 
+import '../../bundles/hacks.js';
 import { addAccessLogNotice } from '../../bundles/accesslog/hook.js';
 
 Oskari.on('app.start', () => {
