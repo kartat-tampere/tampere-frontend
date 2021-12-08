@@ -23,6 +23,9 @@ export const Basket = {
         selectedFiles[getFileId(file)] = file;
         notify();
     },
+    isInBasket: (file) => {
+        return !!selectedFiles[getFileId(file)];
+    },
     list: () => Object.values(selectedFiles),
     remove: (file) => {
         delete selectedFiles[getFileId(file)];

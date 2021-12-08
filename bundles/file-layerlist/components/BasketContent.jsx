@@ -61,7 +61,7 @@ RemoveLayerSelections.propTypes = {
 const Feature = ({ item, layer, onRemove }) => {
     const idField = layer.idField;
     return (<StyledItem>
-        <b><Tooltip title={idField}>{item[idField]}</Tooltip></b>
+        <b><Tooltip title={idField}><span dangerouslySetInnerHTML={{ __html: item[idField] }} /></Tooltip></b>
         <RemoveIcon item={item} onRemove={onRemove} />
         <br/>
         {getFileLinksForFeature(layer.id, item._$files)}

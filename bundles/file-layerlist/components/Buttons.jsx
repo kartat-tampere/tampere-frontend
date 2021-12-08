@@ -4,7 +4,7 @@ import { Basket } from '../basket';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { Message } from 'oskari-ui';
-import { CloudDownloadOutlined, FileAddTwoTone } from '@ant-design/icons';
+import { CloudDownloadOutlined, FileAddTwoTone, DeleteTwoTone } from '@ant-design/icons';
 
 const LinkButton = styled(Button)`
     margin-right: 5px;
@@ -24,12 +24,23 @@ FileLink.propTypes = {
 };
 
 export const BasketLink = ({ item }) => {
-    return (<LinkButton size="small" onClick={() => {
-        Basket.add(item);
+    const isInBasket = Basket.isInBasket(item);
+    const btnClick = () => {
+        if (isInBasket) {
+            Basket.remove(item);
+        } else {
+            Basket.add(item);
+        }
         return false;
-    }}>
-        <FileAddTwoTone twoToneColor="#00BB00" />
-        Poimi koriin
+    };
+    let label = 'Poimi koriin';
+    if (isInBasket) {
+        label = 'Poista korista';
+    }
+    return (<LinkButton size="small" onClick={btnClick}>
+        {!isInBasket && <FileAddTwoTone twoToneColor='#00BB00' /> }
+        {isInBasket && <DeleteTwoTone twoToneColor='#FF0000' /> }
+        {label}
     </LinkButton>);
 };
 
