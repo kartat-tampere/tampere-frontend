@@ -7,6 +7,7 @@ import { Basket } from './basket';
 import { processFeatures } from './helpers/featureshelper';
 import { getLayers, getLayerFromService } from './helpers/layerHelper';
 import { getFeaturesInGeom } from './helpers/geomSelector';
+import { VectorFeatureSelectionService, QNAME } from 'oskari-frontend/bundles/mapping/mapmodule/service/VectorFeatureSelectionService';
 
 Basket.onChange(updateUI);
 
@@ -34,20 +35,20 @@ class FileLayerListBundle extends BasicBundle {
         this.__name = 'file-layerlist';
         this.loc = Oskari.getMsg.bind(null, this.__name);
         this.eventHandlers = {
-            'AfterMapLayerAddEvent': () => {
+            AfterMapLayerAddEvent: () => {
                 updateUI();
             },
-            'AfterMapLayerRemoveEvent': () => {
+            AfterMapLayerRemoveEvent: () => {
                 updateUI();
             },
-            'FeatureEvent': (event) => {
+            FeatureEvent: (event) => {
                 if (event.getOperation() === 'click') {
                     processFeatures(event.getFeatures(), (features) => {
                         showPopup(features[0]._$coord[0], features[0]._$coord[1], features[0]);
                     });
                 }
             },
-            'DrawingEvent': (event) => {
+            DrawingEvent: (event) => {
                 if (!event.getIsFinished() || event.getId() !== FEATURE_SELECT_ID) {
                     // only interested in finished drawings for attachment selection
                     return;
@@ -78,6 +79,7 @@ class FileLayerListBundle extends BasicBundle {
             }
         };
     }
+
     _startImpl () {
         updateUI();
     }
@@ -93,12 +95,8 @@ function getSelectedWFSLayerId () {
     return selectedLayers[0].getId();
 }
 function highlightFeatures () {
-    const WFSLayerService = Oskari.getSandbox().getService('Oskari.mapframework.bundle.mapwfs2.service.WFSLayerService');
-    try {
-        WFSLayerService.emptyAllWFSFeatureSelections();
-    } catch (ignored) {
-        // this crashes if something was removed from basket after layer was removed from map
-    }
+    const selectionService = Oskari.getSandbox().getService(QNAME);
+    selectionService.removeSelection();
     const features = Basket.list();
     if (!features.length) {
         return;
@@ -110,12 +108,8 @@ function highlightFeatures () {
     const featureIds = features
         .filter(f => f._$layerId === layer.getId())
         .map(f => f._oid);
-    // service needs to be called in addition to sending event
-    // FIXME: IN MAPWFS2 and FEATUREDATA2!!
-    WFSLayerService.setWFSFeaturesSelections(layer.getId(), featureIds);
+    selectionService.setSelectedFeatureIds(layer.getId(), featureIds);
     // TODO: group by layer etc
-    var event = Oskari.eventBuilder('WFSFeaturesSelectedEvent')(featureIds, layer);
-    Oskari.getSandbox().notifyAll(event);
 }
 
 function updateUI () {
