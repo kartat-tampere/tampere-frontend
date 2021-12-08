@@ -72,7 +72,7 @@ export const MainPanel = ({ layers = [], selectedLayers = [], drawControl, isDra
                 onClose={() => showBasket(false)}
                 width={350}
                 bodyStyle={{
-                    'padding-top': 0
+                    paddingTop: 0
                 }}
                 visible={basketVisible} >
                 <BasketContent
