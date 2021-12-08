@@ -109,17 +109,20 @@ function showFlyout (layerId) {
 
 function updateUI (layer, progress) {
     ReactDOM.render(
-    <>
-      <LayerDetails
-          {...layer}
-          onPropertyChange={value => changeLayerAttr(value, false)}
-          onSave={value => changeLayerAttr(value, true)}
-      />
-      <FileUploadPanel onSubmit={submitFiles} />
-      <ProgressBar value={progress || 0} />
-      <FileListing files={layer.files || []} onDelete={removeFile} />
-    </>,
-    mainUI[0]);
+        <React.Fragment>
+            <LayerDetails
+                {...layer}
+                onPropertyChange={value => changeLayerAttr(value, false)}
+                onSave={value => changeLayerAttr(value, true)}
+            />
+            <FileUploadPanel onSubmit={submitFiles} />
+            <ProgressBar value={progress || 0} />
+            <FileListing
+                files={layer.files || []}
+                layerId={layer.id}
+                onDelete={removeFile} />
+        </React.Fragment>,
+        mainUI[0]);
 }
 
 function removeFile (layerId, fileId) {

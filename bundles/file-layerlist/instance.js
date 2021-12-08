@@ -7,7 +7,7 @@ import { Basket } from './basket';
 import { processFeatures } from './helpers/featureshelper';
 import { getLayers, getLayerFromService } from './helpers/layerHelper';
 import { getFeaturesInGeom } from './helpers/geomSelector';
-import { VectorFeatureSelectionService, QNAME } from 'oskari-frontend/bundles/mapping/mapmodule/service/VectorFeatureSelectionService';
+import { QNAME } from 'oskari-frontend/bundles/mapping/mapmodule/service/VectorFeatureSelectionService';
 
 Basket.onChange(updateUI);
 
