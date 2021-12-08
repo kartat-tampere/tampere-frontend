@@ -26,7 +26,7 @@ Oskari.clazz.defineES(
             super();
             this.__name = 'file-upload';
             this.eventHandlers = {
-                'MapLayerEvent': (event) => {
+                MapLayerEvent: (event) => {
                     if (event.getOperation() !== 'add') {
                         // only handle add layer
                         return;
@@ -37,11 +37,12 @@ Oskari.clazz.defineES(
                         LayerHelper.setupLayerTools(showFlyout);
                     }
                 },
-                'GetInfoResultEvent': (event) => {
+                GetInfoResultEvent: (event) => {
                     addFileListing(event);
                 }
             };
         }
+
         _startImpl () {
             LayerHelper.setupLayerTools(showFlyout);
         }
@@ -52,7 +53,7 @@ let eventDetection = [];
 
 function addFileListing (gfiResultEvent) {
     // Hacky way of detecting if we sent this...
-    var filtered = eventDetection.filter(e => e !== gfiResultEvent);
+    const filtered = eventDetection.filter(e => e !== gfiResultEvent);
     if (filtered.length !== eventDetection.length) {
         // remove from detection
         eventDetection = filtered;
@@ -60,7 +61,7 @@ function addFileListing (gfiResultEvent) {
         return;
     }
     // Nope, all good, not going to infinity and beyond!
-    var { layerId, features, lonlat } = gfiResultEvent.getData();
+    const { layerId, features, lonlat } = gfiResultEvent.getData();
     const featureId = LayerHelper.getAttachmentFeatureId(layerId, features);
     if (!featureId) {
         // not found
@@ -72,7 +73,7 @@ function addFileListing (gfiResultEvent) {
             // no attachments
             return;
         }
-        var infoEvent = Oskari.eventBuilder('GetInfoResultEvent')({
+        const infoEvent = Oskari.eventBuilder('GetInfoResultEvent')({
             layerId,
             features: [{
                 layerId,

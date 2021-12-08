@@ -73,13 +73,8 @@ function getAttachmentFeatureId (layerId, features) {
         return;
     }
     const featureProps = features[0];
-    const maplayer = LayerHelper.getLayerService().findMapLayer(layerId);
     const featureMappingField = getAttachmentIdFieldName(layerId);
-    const fieldIndex = maplayer.getFields().indexOf(featureMappingField);
-    if (featureProps.length <= fieldIndex) {
-        return;
-    }
-    return featureProps[fieldIndex];
+    return featureProps[featureMappingField];
 }
 
 export const LayerHelper = {
