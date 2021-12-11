@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Message } from 'oskari-ui';
 import { Messaging, LocaleProvider } from 'oskari-ui/util';
 import { MainPanel } from './components/MainPanel';
 import { showPopup, hidePopup } from './components/Popup';
@@ -29,6 +30,38 @@ const toggleDrawing = () => {
     isDrawing ? endDrawSelection() : startDrawSelection();
 };
 
+const clickedFeatures = {
+    waiting: false
+};
+
+const handleFeaturesClicked = (delayed = false) => {
+    const { coords, features, waiting } = clickedFeatures;
+    if (!coords || !features) {
+        // we don't yet have one of the two things we need
+        return;
+    }
+    if (waiting && !delayed) {
+        // another call scheduled as a delayed call. Wait for it instead.
+        return;
+    }
+    if (!delayed) {
+        // make sure we don't have a saved click from another location if we get
+        // the features first. Call itself again with a flag to identify a delayed call.
+        clickedFeatures.waiting = true;
+        setTimeout(() => handleFeaturesClicked(true), 50);
+        return;
+    }
+    // reset waiting if we get this far
+    // -> called with delay so we can start expecting more delayed calls
+    clickedFeatures.waiting = false;
+
+    processFeatures(features, (features) => {
+        showPopup(coords.lon, coords.lat, features[0]);
+        delete clickedFeatures.coords;
+        delete clickedFeatures.features;
+    });
+};
+
 class FileLayerListBundle extends BasicBundle {
     constructor () {
         super();
@@ -41,12 +74,23 @@ class FileLayerListBundle extends BasicBundle {
             AfterMapLayerRemoveEvent: () => {
                 updateUI();
             },
+            MapClickedEvent: (event) => {
+                console.log(event.getLonLat());
+                clickedFeatures.coords = event.getLonLat();
+                handleFeaturesClicked();
+            },
             FeatureEvent: (event) => {
-                if (event.getOperation() === 'click') {
-                    processFeatures(event.getFeatures(), (features) => {
-                        showPopup(features[0]._$coord[0], features[0]._$coord[1], features[0]);
-                    });
+                if (event.getOperation() !== 'click') {
+                    return;
                 }
+
+                const features = event.getParams().features.filter(f => f.layerId === getSelectedWFSLayerId());
+                if (!features.length) {
+                    delete clickedFeatures.coords;
+                    return;
+                }
+                clickedFeatures.features = features;
+                handleFeaturesClicked();
             },
             DrawingEvent: (event) => {
                 if (!event.getIsFinished() || event.getId() !== FEATURE_SELECT_ID) {
@@ -71,9 +115,9 @@ class FileLayerListBundle extends BasicBundle {
                     const featuresWithFiles = features.filter(feat => feat._$files && feat._$files.length);
                     featuresWithFiles.forEach(feat => { Basket.add(feat); });
                     if (featuresWithFiles.length) {
-                        Messaging.success(this.loc('addedToBasket'));
+                        Messaging.success(<Message messageKey='addedToBasket' bundleKey='file-layerlist' />);
                     } else {
-                        Messaging.warn(this.loc('drawNoHits'));
+                        Messaging.warn(<Message messageKey='drawNoHits' bundleKey='file-layerlist' />);
                     }
                 });
             }
