@@ -8,7 +8,8 @@ import { Basket } from './basket';
 import { processFeatures } from './helpers/featureshelper';
 import { getLayers, getLayerFromService } from './helpers/layerHelper';
 import { getFeaturesInGeom } from './helpers/geomSelector';
-import { QNAME } from 'oskari-frontend/bundles/mapping/mapmodule/service/VectorFeatureSelectionService';
+import { createFeatureClickHelper } from '../util/FeatureClickHelper';
+import { QNAME as SELECTION_SERVICE_NAME } from 'oskari-frontend/bundles/mapping/mapmodule/service/VectorFeatureSelectionService';
 
 Basket.onChange(updateUI);
 
@@ -29,68 +30,26 @@ const endDrawSelection = () => {
 const toggleDrawing = () => {
     isDrawing ? endDrawSelection() : startDrawSelection();
 };
-
-const clickedFeatures = {
-    waiting: false
-};
-
-const handleFeaturesClicked = (delayed = false) => {
-    const { coords, features, waiting } = clickedFeatures;
-    if (!coords || !features) {
-        // we don't yet have one of the two things we need
-        return;
-    }
-    if (waiting && !delayed) {
-        // another call scheduled as a delayed call. Wait for it instead.
-        return;
-    }
-    if (!delayed) {
-        // make sure we don't have a saved click from another location if we get
-        // the features first. Call itself again with a flag to identify a delayed call.
-        clickedFeatures.waiting = true;
-        setTimeout(() => handleFeaturesClicked(true), 50);
-        return;
-    }
-    // reset waiting if we get this far
-    // -> called with delay so we can start expecting more delayed calls
-    clickedFeatures.waiting = false;
-
-    processFeatures(features, (features) => {
-        showPopup(coords.lon, coords.lat, features[0]);
-        delete clickedFeatures.coords;
-        delete clickedFeatures.features;
-    });
-};
-
+const BUNDLE_ID = 'file-layerlist';
 class FileLayerListBundle extends BasicBundle {
     constructor () {
         super();
-        this.__name = 'file-layerlist';
+        this.__name = BUNDLE_ID;
         this.loc = Oskari.getMsg.bind(null, this.__name);
+        this.clickHelper = createFeatureClickHelper();
+        this.clickHelper.addListener((coords, features) => {
+            processFeatures(features, (processedFeatures) => {
+                showPopup(coords.lon, coords.lat, processedFeatures[0]);
+            });
+        });
         this.eventHandlers = {
             AfterMapLayerAddEvent: () => {
+                this.clickHelper.setLayer(getSelectedWFSLayerId());
                 updateUI();
             },
             AfterMapLayerRemoveEvent: () => {
+                this.clickHelper.setLayer(getSelectedWFSLayerId());
                 updateUI();
-            },
-            MapClickedEvent: (event) => {
-                console.log(event.getLonLat());
-                clickedFeatures.coords = event.getLonLat();
-                handleFeaturesClicked();
-            },
-            FeatureEvent: (event) => {
-                if (event.getOperation() !== 'click') {
-                    return;
-                }
-
-                const features = event.getParams().features.filter(f => f.layerId === getSelectedWFSLayerId());
-                if (!features.length) {
-                    delete clickedFeatures.coords;
-                    return;
-                }
-                clickedFeatures.features = features;
-                handleFeaturesClicked();
             },
             DrawingEvent: (event) => {
                 if (!event.getIsFinished() || event.getId() !== FEATURE_SELECT_ID) {
@@ -115,9 +74,9 @@ class FileLayerListBundle extends BasicBundle {
                     const featuresWithFiles = features.filter(feat => feat._$files && feat._$files.length);
                     featuresWithFiles.forEach(feat => { Basket.add(feat); });
                     if (featuresWithFiles.length) {
-                        Messaging.success(<Message messageKey='addedToBasket' bundleKey='file-layerlist' />);
+                        Messaging.success(<Message messageKey='addedToBasket' bundleKey={BUNDLE_ID} />);
                     } else {
-                        Messaging.warn(<Message messageKey='drawNoHits' bundleKey='file-layerlist' />);
+                        Messaging.warn(<Message messageKey='drawNoHits' bundleKey={BUNDLE_ID} />);
                     }
                 });
             }
@@ -139,7 +98,7 @@ function getSelectedWFSLayerId () {
     return selectedLayers[0].getId();
 }
 function highlightFeatures () {
-    const selectionService = Oskari.getSandbox().getService(QNAME);
+    const selectionService = Oskari.getSandbox().getService(SELECTION_SERVICE_NAME);
     selectionService.removeSelection();
     const features = Basket.list();
     if (!features.length) {
@@ -164,7 +123,7 @@ function updateUI () {
         highlightFeatures();
         const selectedLayers = Oskari.getSandbox().getMap().getLayers();
         ReactDOM.render(
-            <LocaleProvider value={{ bundleKey: 'file-layerlist' }}>
+            <LocaleProvider value={{ bundleKey: BUNDLE_ID }}>
                 <MainPanel layers={layers} selectedLayers={selectedLayers} drawControl={toggleDrawing} isDrawing={isDrawing}/>
             </LocaleProvider>, getRoot());
     });
