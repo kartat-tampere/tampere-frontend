@@ -6,48 +6,11 @@ import { getService } from './service/layerservice';
 import { LAYER_SELECTION } from './service/featuresHelper';
 import { showPopup } from './components/Popup';
 import { PopupContent } from './components/PopupContent';
+import { createFeatureClickHelper } from '../util/FeatureClickHelper';
 
 const BasicBundle = Oskari.clazz.get('Oskari.BasicBundle');
 
 const SOURCEMATERIAL_ID = 'sourcematerial';
-const clickedFeatures = {
-    waiting: false
-};
-const handleFeaturesClicked = (delayed = false) => {
-    const { coords, features, waiting } = clickedFeatures;
-    if (!coords || !features) {
-        // we don't yet have one of the two things we need
-        return;
-    }
-    if (waiting && !delayed) {
-        // another call scheduled as a delayed call. Wait for it instead.
-        return;
-    }
-    if (!delayed) {
-        // make sure we don't have a saved click from another location if we get
-        // the features first. Call itself again with a flag to identify a delayed call.
-        clickedFeatures.waiting = true;
-        setTimeout(() => handleFeaturesClicked(true), 50);
-        return;
-    }
-    // reset waiting if we get this far
-    // -> called with delay so we can start expecting more delayed calls
-    clickedFeatures.waiting = false;
-    getService(service => {
-        const layers = service.getLayers();
-        const getLayerName = (layerId) => layers.find(l => layerId.indexOf(l.id) > 10).name;
-        const content = features.map(layerFeatures => {
-            return {
-                ...layerFeatures,
-                layerName: Oskari.getLocalized(getLayerName(layerFeatures.layerId))
-            };
-        });
-        showPopup(coords.lon, coords.lat, <PopupContent features={content} />);
-        delete clickedFeatures.coords;
-        delete clickedFeatures.features;
-    });
-};
-
 let isDrawing = false;
 let currentSelection;
 const startDrawSelection = () => {
@@ -72,6 +35,21 @@ class SourceMaterialBundle extends BasicBundle {
         super();
         this.__name = SOURCEMATERIAL_ID;
         this.loc = loc;
+        const helper = createFeatureClickHelper();
+        helper.setLayer(LAYER_SELECTION);
+        helper.addListener((coords, features) => {
+            getService(service => {
+                const layers = service.getLayers();
+                const getLayerName = (layerId) => layers.find(l => layerId.indexOf(l.id) > 10).name;
+                const content = features.map(layerFeatures => {
+                    return {
+                        ...layerFeatures,
+                        layerName: Oskari.getLocalized(getLayerName(layerFeatures.layerId))
+                    };
+                });
+                showPopup(coords.lon, coords.lat, <PopupContent features={content} />);
+            });
+        });
         this.eventHandlers = {
             DrawingEvent: (event) => {
                 if (!event.getIsFinished() || event.getId() !== SOURCEMATERIAL_ID) {
@@ -81,22 +59,6 @@ class SourceMaterialBundle extends BasicBundle {
                 currentSelection = event.getGeoJson().features[0];
                 getService(service => service.setSelection(currentSelection));
                 endDrawSelection();
-            },
-            MapClickedEvent: (event) => {
-                clickedFeatures.coords = event.getLonLat();
-                handleFeaturesClicked();
-            },
-            FeatureEvent: (event) => {
-                if (event.getOperation() !== 'click') {
-                    return;
-                }
-                const features = event.getParams().features.filter(f => f.layerId !== LAYER_SELECTION);
-                if (!features.length) {
-                    delete clickedFeatures.coords;
-                    return;
-                }
-                clickedFeatures.features = features;
-                handleFeaturesClicked();
             }
         };
     }
