@@ -19,7 +19,7 @@ const startDrawSelection = () => {
     isDrawing = true;
     getService(service => service.setSelection(null));
     updateUI();
-};
+}; 
 const endDrawSelection = () => {
     Oskari.getSandbox().postRequestByName('DrawTools.StopDrawingRequest', [SOURCEMATERIAL_ID, true, true]);
     isDrawing = false;
@@ -36,11 +36,14 @@ class SourceMaterialBundle extends BasicBundle {
         this.__name = SOURCEMATERIAL_ID;
         this.loc = loc;
         const helper = createFeatureClickHelper();
-        helper.setLayer(LAYER_SELECTION);
+        helper.setLayer(null); // null to signify "interest in all layers"
         helper.addListener((coords, features) => {
             getService(service => {
                 const layers = service.getLayers();
-                const getLayerName = (layerId) => layers.find(l => layerId.indexOf(l.id) > 10).name;
+                const getLayerName = (layerId) => {
+                    const layer = layers.find(l => layerId.indexOf(l.id) > 10) || {};
+                    return layer.name || 'N/A';
+                };
                 const content = features.map(layerFeatures => {
                     return {
                         ...layerFeatures,
