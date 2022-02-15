@@ -45,11 +45,14 @@ class SourceMaterialBundle extends BasicBundle {
                     return layer.name || 'N/A';
                 };
                 const content = features.map(layerFeatures => {
+                    if (LAYER_SELECTION === layerFeatures.layerId) {
+                        return null;
+                    }
                     return {
                         ...layerFeatures,
                         layerName: Oskari.getLocalized(getLayerName(layerFeatures.layerId))
                     };
-                });
+                }).filter(i => !!i);
                 showPopup(coords.lon, coords.lat, <PopupContent features={content} />);
             });
         });
