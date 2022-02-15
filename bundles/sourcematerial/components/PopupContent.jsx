@@ -15,8 +15,8 @@ export const PopupContent = ({ features }) => {
         return (<div>Ei kohdetietoja</div>);
     }
     return (<div>
-        { features.map(feat => (
-            <React.Fragment key={feat.layerId}>
+        { features.map((feat, index) => (
+            <React.Fragment key={feat.layerId + '_' + index}>
                 <h4>{feat.layerName}</h4>
                 { feat.geojson.features.map(item =>
                     (<ObjectData key={item.id} item={item.properties} />)) }

@@ -39,6 +39,9 @@ export const showPopup = (x, y, content) => {
         addMapOverlay();
     }
     const el = document.getElementById('popup-content');
+    // clear previous content
+    ReactDOM.unmountComponentAtNode(el);
+    // render new content
     ReactDOM.render(<LocaleProvider value={{ bundleKey: 'sourcematerial' }}>{content}</LocaleProvider>, el);
     overlay.setPosition([x, y]);
     const closeBtn = document.getElementById('popup-closer');
