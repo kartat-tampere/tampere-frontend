@@ -53,6 +53,8 @@ import 'oskari-loader!../../bundles/file-upload/bundle.js';
 
 import 'oskari-lazy-loader?file-layerlist!../../bundles/file-layerlist/bundle.js';
 
+import 'oskari-loader!oskari-frontend-contrib/packages/terrain-profile/bundle.js';
+
 // /tampereeeeee
 
 import 'oskari-lazy-loader?admin-layereditor!oskari-frontend/packages/admin/bundle/admin-layereditor/bundle.js';
