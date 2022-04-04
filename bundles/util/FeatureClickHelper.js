@@ -51,7 +51,7 @@ export const createFeatureClickHelper = (sandbox = Oskari.getSandbox()) => {
         delete clickedFeatures.coords;
         delete clickedFeatures.features;
     };
-
+ 
     const eventHandlers = {
         MapClickedEvent: (event) => {
             clickedFeatures.coords = event.getLonLat();
@@ -61,8 +61,8 @@ export const createFeatureClickHelper = (sandbox = Oskari.getSandbox()) => {
             if (event.getOperation() !== 'click' || typeof layerOfInterest === 'undefined') {
                 return;
             }
-
-            const features = event.getParams().features.filter(f => f.layerId === layerOfInterest);
+            const interestedInAllLayers = layerOfInterest === null;
+            const features = event.getParams().features.filter(f => interestedInAllLayers || f.layerId === layerOfInterest);
             if (!features.length) {
                 delete clickedFeatures.coords;
                 return;
