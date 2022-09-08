@@ -34,7 +34,6 @@ import 'oskari-loader!oskari-frontend/packages/catalogue/bundle/metadataflyout/b
 import 'oskari-loader!oskari-frontend/packages/framework/featuredata2/bundle.js';
 
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/myplaces3/bundle.js';
-import 'oskari-loader!oskari-frontend/packages/mapping/ol/layerswipe/bundle.js';
 
 //import 'oskari-loader!oskari-frontend/packages/framework/bundle/guidedtour/bundle.js';
 import 'oskari-loader!oskari-frontend/packages/framework/bundle/printout/bundle.js';
