@@ -21,7 +21,7 @@ const StyledRootEl = styled('div')`
 `;
 
 export const MainPanel = ({ layers = [], selectedLayers = [], drawControl, isDrawing }) => {
-    const [layerSelectVisible, showLayerSelect] = useState(false);
+    const [layerSelectVisible, showLayerSelect] = useState(true);
     const [basketVisible, showBasket] = useState(false);
     const isSelected = (layer) => {
         return selectedLayers.some(l => l.getId() === layer.getId());
