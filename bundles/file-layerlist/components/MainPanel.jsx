@@ -21,7 +21,7 @@ const StyledRootEl = styled('div')`
 `;
 
 export const MainPanel = ({ layers = [], selectedLayers = [], drawControl, isDrawing }) => {
-    const [layerSelectVisible, showLayerSelect] = useState(false);
+    const [layerSelectVisible, showLayerSelect] = useState(true);
     const [basketVisible, showBasket] = useState(false);
     const isSelected = (layer) => {
         return selectedLayers.some(l => l.getId() === layer.getId());
@@ -64,6 +64,8 @@ export const MainPanel = ({ layers = [], selectedLayers = [], drawControl, isDra
                         key={layer.getId()}
                         layer={layer}
                         isSelected={isSelected(layer)} />) }
+
+                <AdditionalDatasetInfo />
             </Drawer>
             <Drawer
                 title={<BasketTitle />}
@@ -86,7 +88,28 @@ export const MainPanel = ({ layers = [], selectedLayers = [], drawControl, isDra
 const BasketTitle = () => (
     <React.Fragment>
         <Message messageKey='basket.title' /> <Tooltip placement="bottom" title={<Message messageKey='buttons.clearBasket' />}><span><RemoveAllIcon /></span></Tooltip>
+        <BasketSubTitle>
+            <Message messageKey='basket.byDownloadingYouAcceptTermsOfUse' />
+        </BasketSubTitle>
     </React.Fragment>
+);
+
+const BasketSubTitle = styled('div')`
+    margin-top: 5px;
+    font-size: 80%;
+`;
+
+const StyledAdditionalMetadata = styled('div')`
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid #1890FF;
+    border-radius: 5px;
+`;
+
+const AdditionalDatasetInfo = () => (
+    <StyledAdditionalMetadata>
+        <Message messageKey='additionalDatasetCanBeOrdered' allowHTML='true' />        
+    </StyledAdditionalMetadata>
 );
 
 MainPanel.propTypes = {
